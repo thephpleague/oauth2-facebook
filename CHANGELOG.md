@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## 0.0.2 - February 4, 2015
+
+- Added `branch-alias` to `composer.json`.
+
 ## 0.0.1 - February 4, 2015
 
 - Updated `composer.json` to require OAuth 2.0 Client v1.0 with `@dev` flag.
