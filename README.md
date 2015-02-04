@@ -24,10 +24,16 @@ The following versions of PHP are supported.
 
 ## Installation
 
-Via Composer
+Add the following to your `composer.json` file.
 
-``` bash
-$ composer require league/oauth2-facebook
+> **Note:** Once version 1.0 of the [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client) is released, you'll be able to install from composer without the `@dev` minimum stability flag.
+
+```json
+{
+    "require": {
+        "league/oauth2-facebook": "~0.0@dev"
+    }
+}
 ```
 
 ## Usage

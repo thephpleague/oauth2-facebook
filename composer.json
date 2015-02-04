@@ -36,5 +36,7 @@
             "League\\OAuth2\\Client\\Test\\": "tests/src/"
         }
     },
-    "minimum-stability": "stable"
+    "branch-alias": {
+        "dev-master": "0.0.x-dev"
+    }
 }
