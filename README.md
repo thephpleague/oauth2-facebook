@@ -46,7 +46,7 @@ $provider = new League\OAuth2\Client\Provider\Facebook([
     'clientSecret'      => '{facebook-app-secret}',
     'redirectUri'       => 'https://example.com/callback-url',
     'scopes'            => ['email', '...', '...'],
-    'graphApiVersion'   => 'v2.2',
+    'graphApiVersion'   => 'v2.3',
 ]);
 
 if (!isset($_GET['code'])) {
@@ -100,7 +100,7 @@ You should not rely on the default fallback Graph version defined in this packag
 ```php
 $provider = new League\OAuth2\Client\Provider\Facebook([
     /* . . . */
-    'graphApiVersion'   => 'v2.2',
+    'graphApiVersion'   => 'v2.3',
 ]);
 ```
 
