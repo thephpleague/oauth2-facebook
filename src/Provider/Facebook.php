@@ -27,7 +27,8 @@ class Facebook extends AbstractProvider
         parent::__construct($options);
 
         if (!isset($options['graphApiVersion'])) {
-            throw new \InvalidArgumentException('No "graphApiVersion" found in configuration values. Please set a default Graph API version.');
+            $message = 'The "graphApiVersion" option not set. Please set a default Graph API version.';
+            throw new \InvalidArgumentException($message);
         }
 
         $this->graphApiVersion = $options['graphApiVersion'];
