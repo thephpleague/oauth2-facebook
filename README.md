@@ -99,7 +99,7 @@ if (!isset($_GET['code'])) {
 
 ### Graph API Version
 
-You should not rely on the default fallback Graph version defined in this package. You should specify a Graph version when you instantiate the `Facebook` provider.
+The `graphApiVersion` option is required. If it is not set, an `\InvalidArgumentException` will be thrown.
 
 ```php
 $provider = new League\OAuth2\Client\Provider\Facebook([
@@ -108,7 +108,7 @@ $provider = new League\OAuth2\Client\Provider\Facebook([
 ]);
 ```
 
-This is best so that you have full control over when your app upgrades to the next version of Graph. Otherwise your app might break when the fallback Graph version is updated in this package.
+Each version of the Graph API has breaking changes from one version to the next. This package no longer supports a fallback to a default Graph version since your app might break when the fallback Graph version is updated.
 
 See the [Graph API version schedule](https://developers.facebook.com/docs/apps/changelog) for more info.
 
