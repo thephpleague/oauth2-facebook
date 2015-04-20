@@ -11,7 +11,7 @@ class Facebook extends AbstractProvider
     /**
      * @const string The fallback Graph API version to use for requests.
      */
-    const DEFAULT_GRAPH_VERSION = 'v2.2';
+    const DEFAULT_GRAPH_VERSION = 'v2.3';
 
     /**
      * @var string The Graph API version to use for requests.
