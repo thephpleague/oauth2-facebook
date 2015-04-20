@@ -9,11 +9,6 @@ use League\OAuth2\Client\Exception\FacebookProviderException;
 class Facebook extends AbstractProvider
 {
     /**
-     * @const string The fallback Graph API version to use for requests.
-     */
-    const DEFAULT_GRAPH_VERSION = 'v2.3';
-
-    /**
      * @var string The Graph API version to use for requests.
      */
     protected $graphApiVersion;
@@ -22,12 +17,20 @@ class Facebook extends AbstractProvider
 
     public $responseType = 'string';
 
+    /**
+     * @param array $options
+     *
+     * @throws \InvalidArgumentException
+     */
     public function __construct($options)
     {
         parent::__construct($options);
-        $this->graphApiVersion = (isset($options['graphApiVersion']))
-            ? $options['graphApiVersion']
-            : static::DEFAULT_GRAPH_VERSION;
+
+        if (!isset($options['graphApiVersion'])) {
+            throw new \InvalidArgumentException('No "graphApiVersion" found in configuration values. Please set a default Graph API version.');
+        }
+
+        $this->graphApiVersion = $options['graphApiVersion'];
     }
 
     public function urlAuthorize()

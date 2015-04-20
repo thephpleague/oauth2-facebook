@@ -9,6 +9,11 @@ use League\OAuth2\Client\Token\AccessToken;
 class FacebookTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @const string The version of the Graph API we want to use for tests.
+     */
+    const GRAPH_API_VERSION = 'v2.3';
+
+    /**
      * @var \League\OAuth2\Client\Provider\Facebook
      */
     protected $provider;
@@ -19,6 +24,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
+            'graphApiVersion' => static::GRAPH_API_VERSION,
         ]);
     }
 
@@ -47,7 +53,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
     {
         $url = $this->provider->urlAccessToken();
         $uri = parse_url($url);
-        $graphVersion = Facebook::DEFAULT_GRAPH_VERSION;
+        $graphVersion = static::GRAPH_API_VERSION;
 
         $this->assertEquals('/'.$graphVersion.'/oauth/access_token', $uri['path']);
     }
@@ -71,7 +77,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     public function testGraphApiVersionWillFallbackToDefault()
     {
-        $graphVersion = Facebook::DEFAULT_GRAPH_VERSION;
+        $graphVersion = static::GRAPH_API_VERSION;
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
         $urlAuthorize = $this->provider->urlAuthorize();
@@ -140,5 +146,17 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['mock_first_name', 'mock_last_name'], $this->provider->getUserScreenName($token));
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
         $this->assertEquals('mock_email', $user->email);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testNotSettingADefaultGraphApiVersionWillThrow()
+    {
+        new Facebook([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
     }
 }
