@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## 0.0.3 - April 20, 2015
+
+- Added support to properly handle the new json response for access tokens starting in Graph `v2.3`.
+- If the `graphApiVersion` option is not provided to the `Facebook` provider constructor an `\InvalidArgumentException` will be thrown.
+- Removed the `Facebook::DEFAULT_GRAPH_VERSION` fallback value.
+- Updated docs to reflect latest Graph version `v2.3`.
+
 ## 0.0.2 - February 4, 2015
 
 - Added `branch-alias` to `composer.json`.
