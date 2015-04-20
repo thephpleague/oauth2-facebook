@@ -5,6 +5,7 @@ namespace League\OAuth2\Client\Provider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Entity\User;
 use League\OAuth2\Client\Exception\FacebookProviderException;
+use Ivory\HttpAdapter\HttpAdapterInterface;
 
 class Facebook extends AbstractProvider
 {
@@ -19,12 +20,13 @@ class Facebook extends AbstractProvider
 
     /**
      * @param array $options
+     * @param HttpAdapterInterface $httpClient
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($options)
+    public function __construct($options = [], HttpAdapterInterface $httpClient = null)
     {
-        parent::__construct($options);
+        parent::__construct($options, $httpClient);
 
         if (!isset($options['graphApiVersion'])) {
             $message = 'The "graphApiVersion" option not set. Please set a default Graph API version.';

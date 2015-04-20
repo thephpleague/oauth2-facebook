@@ -91,12 +91,12 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAccessToken()
     {
-        $response = m::mock('GuzzleHttp\Message\Response');
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
         $response->shouldReceive('getBody')
             ->times(1)
             ->andReturn('{"access_token":"mock_access_token","token_type":"bearer","expires_in":3600}');
 
-        $client = m::mock('GuzzleHttp\Client');
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
         $client->shouldReceive('post')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
@@ -124,17 +124,17 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     public function testUserData()
     {
-        $postResponse = m::mock('GuzzleHttp\Message\Response');
+        $postResponse = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
         $postResponse->shouldReceive('getBody')
             ->times(1)
             ->andReturn('{"access_token":"mock_access_token","token_type":"bearer","expires_in":3600}');
 
-        $getResponse = m::mock('GuzzleHttp\Message\Response');
+        $getResponse = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
         $getResponse->shouldReceive('getBody')
             ->andReturn('{"id": 12345, "name": "mock_name", "username": "mock_username", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "Location": "mock_home", "bio": "mock_description", "link": "mock_facebook_url"}');
         $getResponse->shouldReceive('getInfo')->andReturn(['url' => 'mock_image_url']);
 
-        $client = m::mock('GuzzleHttp\Client');
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
         $client->shouldReceive('post')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get')->times(4)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
@@ -169,12 +169,12 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
           'graphApiVersion' => 'v2.2',
         ]);
 
-        $response = m::mock('GuzzleHttp\Message\Response');
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
         $response->shouldReceive('getBody')
                  ->times(1)
                  ->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
 
-        $client = m::mock('GuzzleHttp\Client');
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
         $client->shouldReceive('post')->times(1)->andReturn($response);
         $provider->setHttpClient($client);
 

@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## 0.0.4 - April 20, 2015
+
+- Updated package to run on `egeloen/http-adapter` instead of Guzzle.
+
 ## 0.0.3 - April 20, 2015
 
 - Added support to properly handle the new json response for access tokens starting in Graph `v2.3`.
