@@ -94,7 +94,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $response = m::mock('GuzzleHttp\Message\Response');
         $response->shouldReceive('getBody')
             ->times(1)
-            ->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
+            ->andReturn('{"access_token":"mock_access_token","token_type":"bearer","expires_in":3600}');
 
         $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('post')->times(1)->andReturn($response);
@@ -105,8 +105,8 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('mock_access_token', $token->accessToken);
         $this->assertLessThanOrEqual(time() + 3600, $token->expires);
         $this->assertGreaterThanOrEqual(time(), $token->expires);
-        $this->assertEquals('mock_refresh_token', $token->refreshToken);
-        $this->assertEquals('1', $token->uid);
+        $this->assertNull($token->refreshToken, 'Facebook does not support refresh tokens. Expected null.');
+        $this->assertNull($token->uid, 'Facebook does not return user ID with access token. Expected null.');
     }
 
     /**
@@ -127,7 +127,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $postResponse = m::mock('GuzzleHttp\Message\Response');
         $postResponse->shouldReceive('getBody')
             ->times(1)
-            ->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
+            ->andReturn('{"access_token":"mock_access_token","token_type":"bearer","expires_in":3600}');
 
         $getResponse = m::mock('GuzzleHttp\Message\Response');
         $getResponse->shouldReceive('getBody')
@@ -158,5 +158,32 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
           'clientSecret' => 'mock_secret',
           'redirectUri' => 'none',
         ]);
+    }
+
+    public function testOldVersionsOfGraphWillParseStringResponse()
+    {
+        $provider = new Facebook([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+          'graphApiVersion' => 'v2.2',
+        ]);
+
+        $response = m::mock('GuzzleHttp\Message\Response');
+        $response->shouldReceive('getBody')
+                 ->times(1)
+                 ->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
+
+        $client = m::mock('GuzzleHttp\Client');
+        $client->shouldReceive('post')->times(1)->andReturn($response);
+        $provider->setHttpClient($client);
+
+        $token = $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+
+        $this->assertEquals('mock_access_token', $token->accessToken);
+        $this->assertLessThanOrEqual(time() + 3600, $token->expires);
+        $this->assertGreaterThanOrEqual(time(), $token->expires);
+        $this->assertEquals('mock_refresh_token', $token->refreshToken);
+        $this->assertEquals('1', $token->uid);
     }
 }

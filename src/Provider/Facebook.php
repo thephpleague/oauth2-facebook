@@ -15,7 +15,7 @@ class Facebook extends AbstractProvider
 
     public $scopes = ['public_profile', 'email'];
 
-    public $responseType = 'string';
+    public $responseType = 'json';
 
     /**
      * @param array $options
@@ -32,6 +32,7 @@ class Facebook extends AbstractProvider
         }
 
         $this->graphApiVersion = $options['graphApiVersion'];
+        $this->setFacebookResponseType();
     }
 
     public function urlAuthorize()
@@ -114,5 +115,21 @@ class Facebook extends AbstractProvider
         }
 
         return parent::getAccessToken($grant, $params);
+    }
+
+    /**
+     * Pre-Graph v2.3, response types were "string".
+     * Starting with v2.3, response types are "json".
+     */
+    private function setFacebookResponseType()
+    {
+        switch ($this->graphApiVersion) {
+            case 'v1.0':
+            case 'v2.0':
+            case 'v2.1':
+            case 'v2.2':
+                $this->responseType = 'string';
+                break;
+        }
     }
 }
