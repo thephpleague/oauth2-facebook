@@ -5,6 +5,7 @@ namespace League\OAuth2\Client\Provider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Entity\User;
 use League\OAuth2\Client\Exception\FacebookProviderException;
+use League\OAuth2\Client\Exception\IDPException;
 use Ivory\HttpAdapter\HttpAdapterInterface;
 
 class Facebook extends AbstractProvider
@@ -117,6 +118,13 @@ class Facebook extends AbstractProvider
         }
 
         return parent::getAccessToken($grant, $params);
+    }
+
+    public function throwIDPException(array $result)
+    {
+        $result = $result['error'];
+
+        throw new IDPException($result);
     }
 
     /**

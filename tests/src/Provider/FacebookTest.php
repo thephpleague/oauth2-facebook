@@ -186,4 +186,29 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('mock_refresh_token', $token->refreshToken);
         $this->assertEquals('1', $token->uid);
     }
+
+    public function testProperlyHandlesErrorResponses()
+    {
+        $postResponse = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $postResponse->shouldReceive('getBody')
+                     ->times(1)
+                     ->andReturn('{"error":{"message":"Foo auth error","type":"OAuthException","code":191}}');
+
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('post')->times(1)->andReturn($postResponse);
+        $this->provider->setHttpClient($client);
+
+        $errorMessage = '';
+        $errorCode = 0;
+
+        try {
+            $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        } catch (\League\OAuth2\Client\Exception\IDPException $e) {
+            $errorMessage = $e->getMessage();
+            $errorCode = $e->getCode();
+        }
+
+        $this->assertEquals('Foo auth error', $errorMessage);
+        $this->assertEquals(191, $errorCode);
+    }
 }

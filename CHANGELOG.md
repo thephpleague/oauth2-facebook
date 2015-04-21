@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## 0.0.5 - April 21, 2015
+
+- Fixed Graph-specific error response handling.
+
 ## 0.0.4 - April 20, 2015
 
 - Updated package to run on `egeloen/http-adapter` instead of Guzzle.
