@@ -5,6 +5,15 @@ namespace League\OAuth2\Client\Test\Provider;
 use Mockery as m;
 use League\OAuth2\Client\Provider\Facebook;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+
+class FooFacebookProvider extends Facebook
+{
+    protected function fetchUserDetails(AccessToken $token)
+    {
+        return json_decode('{"id": 12345, "name": "mock_name", "username": "mock_username", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "Location": "mock_home", "bio": "mock_description", "link": "mock_facebook_url"}', true);
+    }
+}
 
 class FacebookTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,7 +23,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
     const GRAPH_API_VERSION = 'v2.3';
 
     /**
-     * @var \League\OAuth2\Client\Provider\Facebook
+     * @var Facebook
      */
     protected $provider;
 
@@ -46,7 +55,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('scope', $query);
         $this->assertArrayHasKey('response_type', $query);
         $this->assertArrayHasKey('approval_prompt', $query);
-        $this->assertNotNull($this->provider->state);
+        $this->assertNotNull($this->provider->getState());
     }
 
     public function testUrlAccessToken()
@@ -89,6 +98,23 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/'.$graphVersion.'/me', $urlUserDetails);
     }
 
+    public function testTheBetaTierCanBeEnabled()
+    {
+        $provider = new Facebook([
+          'graphApiVersion' => 'v0.0',
+          'enableBetaTier' => true,
+        ]);
+        $fooToken = new AccessToken(['access_token' => 'foo_token']);
+
+        $urlAuthorize = parse_url($provider->urlAuthorize(), PHP_URL_HOST);
+        $urlAccessToken = parse_url($provider->urlAccessToken(), PHP_URL_HOST);
+        $urlUserDetails = parse_url($provider->urlUserDetails($fooToken), PHP_URL_HOST);
+
+        $this->assertEquals('www.beta.facebook.com', $urlAuthorize);
+        $this->assertEquals('graph.beta.facebook.com', $urlAccessToken);
+        $this->assertEquals('graph.beta.facebook.com', $urlUserDetails);
+    }
+
     public function testGetAccessToken()
     {
         $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
@@ -102,15 +128,15 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
-        $this->assertEquals('mock_access_token', $token->accessToken);
-        $this->assertLessThanOrEqual(time() + 3600, $token->expires);
-        $this->assertGreaterThanOrEqual(time(), $token->expires);
-        $this->assertNull($token->refreshToken, 'Facebook does not support refresh tokens. Expected null.');
-        $this->assertNull($token->uid, 'Facebook does not return user ID with access token. Expected null.');
+        $this->assertEquals('mock_access_token', $token->getToken());
+        $this->assertLessThanOrEqual(time() + 3600, $token->getExpires());
+        $this->assertGreaterThanOrEqual(time(), $token->getExpires());
+        $this->assertNull($token->getRefreshToken(), 'Facebook does not support refresh tokens. Expected null.');
+        $this->assertNull($token->getUid(), 'Facebook does not return user ID with access token. Expected null.');
     }
 
     /**
-     * @expectedException \League\OAuth2\Client\Exception\FacebookProviderException
+     * @expectedException \League\OAuth2\Client\Provider\Exception\FacebookProviderException
      */
     public function testTryingToRefreshAnAccessTokenWillThrow()
     {
@@ -119,33 +145,23 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     public function testScopes()
     {
-        $this->assertEquals(['public_profile', 'email'], $this->provider->getScopes());
+        $this->assertEquals(['public_profile', 'email'], $this->provider->getDefaultScopes());
     }
 
     public function testUserData()
     {
-        $postResponse = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
-        $postResponse->shouldReceive('getBody')
-            ->times(1)
-            ->andReturn('{"access_token":"mock_access_token","token_type":"bearer","expires_in":3600}');
+        $provider = new FooFacebookProvider([
+          'graphApiVersion' => static::GRAPH_API_VERSION,
+        ]);
 
-        $getResponse = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
-        $getResponse->shouldReceive('getBody')
-            ->andReturn('{"id": 12345, "name": "mock_name", "username": "mock_username", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "Location": "mock_home", "bio": "mock_description", "link": "mock_facebook_url"}');
-        $getResponse->shouldReceive('getInfo')->andReturn(['url' => 'mock_image_url']);
+        $token = m::mock('League\OAuth2\Client\Token\AccessToken');
+        $user = $provider->getUserDetails($token);
 
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
-        $client->shouldReceive('post')->times(1)->andReturn($postResponse);
-        $client->shouldReceive('get')->times(4)->andReturn($getResponse);
-        $this->provider->setHttpClient($client);
-
-        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
-        $user = $this->provider->getUserDetails($token);
-
-        $this->assertEquals(12345, $this->provider->getUserUid($token));
-        $this->assertEquals(['mock_first_name', 'mock_last_name'], $this->provider->getUserScreenName($token));
-        $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
-        $this->assertEquals('mock_email', $user->email);
+        $this->assertEquals(12345, $user->getUserId($token));
+        $this->assertEquals('mock_name', $user->getName($token));
+        $this->assertEquals('mock_first_name', $user->getFirstName($token));
+        $this->assertEquals('mock_last_name', $user->getLastName($token));
+        $this->assertEquals('mock_email', $user->getEmail($token));
     }
 
     /**
@@ -180,11 +196,11 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
         $token = $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
-        $this->assertEquals('mock_access_token', $token->accessToken);
-        $this->assertLessThanOrEqual(time() + 3600, $token->expires);
-        $this->assertGreaterThanOrEqual(time(), $token->expires);
-        $this->assertEquals('mock_refresh_token', $token->refreshToken);
-        $this->assertEquals('1', $token->uid);
+        $this->assertEquals('mock_access_token', $token->getToken());
+        $this->assertLessThanOrEqual(time() + 3600, $token->getExpires());
+        $this->assertGreaterThanOrEqual(time(), $token->getExpires());
+        $this->assertEquals('mock_refresh_token', $token->getRefreshToken());
+        $this->assertEquals('1', $token->getUid());
     }
 
     public function testProperlyHandlesErrorResponses()
@@ -203,12 +219,12 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
         try {
             $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
-        } catch (\League\OAuth2\Client\Exception\IDPException $e) {
+        } catch (IdentityProviderException $e) {
             $errorMessage = $e->getMessage();
             $errorCode = $e->getCode();
         }
 
-        $this->assertEquals('Foo auth error', $errorMessage);
+        $this->assertEquals('OAuthException: Foo auth error', $errorMessage);
         $this->assertEquals(191, $errorCode);
     }
 }

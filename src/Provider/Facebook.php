@@ -3,115 +3,102 @@
 namespace League\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Token\AccessToken;
-use League\OAuth2\Client\Entity\User;
-use League\OAuth2\Client\Exception\FacebookProviderException;
-use League\OAuth2\Client\Exception\IDPException;
-use Ivory\HttpAdapter\HttpAdapterInterface;
+use League\OAuth2\Client\Provider\Exception\FacebookProviderException;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 class Facebook extends AbstractProvider
 {
     /**
-     * @var string The Graph API version to use for requests.
+     * Production Graph API URL.
+     *
+     * @const string
+     */
+    const BASE_FACEBOOK_URL = 'https://www.facebook.com/';
+
+    /**
+     * Beta tier URL of the Graph API.
+     *
+     * @const string
+     */
+    const BASE_FACEBOOK_URL_BETA = 'https://www.beta.facebook.com/';
+
+    /**
+     * Production Graph API URL.
+     *
+     * @const string
+     */
+    const BASE_GRAPH_URL = 'https://graph.facebook.com/';
+
+    /**
+     * Beta tier URL of the Graph API.
+     *
+     * @const string
+     */
+    const BASE_GRAPH_URL_BETA = 'https://graph.beta.facebook.com/';
+
+    /**
+     * The Graph API version to use for requests.
+     *
+     * @var string
      */
     protected $graphApiVersion;
 
-    public $scopes = ['public_profile', 'email'];
-
-    public $responseType = 'json';
+    /**
+     * A toggle to enable the beta tier URL's.
+     *
+     * @var boolean
+     */
+    private $enableBetaMode = false;
 
     /**
      * @param array $options
-     * @param HttpAdapterInterface $httpClient
+     * @param array $collaborators
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($options = [], HttpAdapterInterface $httpClient = null)
+    public function __construct($options = [], array $collaborators = [])
     {
-        parent::__construct($options, $httpClient);
+        parent::__construct($options, $collaborators);
 
-        if (!isset($options['graphApiVersion'])) {
+        if (empty($options['graphApiVersion'])) {
             $message = 'The "graphApiVersion" option not set. Please set a default Graph API version.';
             throw new \InvalidArgumentException($message);
         }
 
         $this->graphApiVersion = $options['graphApiVersion'];
-        $this->setFacebookResponseType();
+
+        if (!empty($options['enableBetaTier']) && $options['enableBetaTier'] === true) {
+            $this->enableBetaMode = true;
+        }
     }
 
     public function urlAuthorize()
     {
-        return 'https://www.facebook.com/'.$this->graphApiVersion.'/dialog/oauth';
+        return $this->getBaseFacebookUrl().$this->graphApiVersion.'/dialog/oauth';
     }
 
     public function urlAccessToken()
     {
-        return 'https://graph.facebook.com/'.$this->graphApiVersion.'/oauth/access_token';
+        return $this->getBaseGraphUrl().$this->graphApiVersion.'/oauth/access_token';
+    }
+
+    public function getDefaultScopes()
+    {
+        return ['public_profile', 'email'];
     }
 
     public function urlUserDetails(AccessToken $token)
     {
         $fields = implode(',', [
-            'id',
-            'name',
-            'first_name',
-            'last_name',
-            'email',
-            'hometown',
-            'bio',
-            'picture.type(large){url}',
-            'gender',
-            'locale',
-            'link',
+            'id', 'name', 'first_name', 'last_name',
+            'email', 'hometown', 'bio', 'picture.type(large){url}',
+            'gender', 'locale', 'link',
         ]);
 
-        return 'https://graph.facebook.com/'.$this->graphApiVersion.'/me?fields='.$fields.'&access_token='.$token;
+        return $this->getBaseGraphUrl().$this->graphApiVersion.'/me?fields='.$fields.'&access_token='.$token;
     }
 
-    public function userDetails($response, AccessToken $token)
-    {
-        $user = new User();
-
-        $email = (isset($response->email)) ? $response->email : null;
-        // The "hometown" field will only be returned if you ask for the `user_hometown` permission.
-        $location = (isset($response->hometown->name)) ? $response->hometown->name : null;
-        $description = (isset($response->bio)) ? $response->bio : null;
-        $imageUrl = (isset($response->picture->data->url)) ? $response->picture->data->url : null;
-        $gender = (isset($response->gender)) ? $response->gender : null;
-        $locale = (isset($response->locale)) ? $response->locale : null;
-
-        $user->exchangeArray([
-            'uid' => $response->id,
-            'name' => $response->name,
-            'firstname' => $response->first_name,
-            'lastname' => $response->last_name,
-            'email' => $email,
-            'location' => $location,
-            'description' => $description,
-            'imageurl' => $imageUrl,
-            'gender' => $gender,
-            'locale' => $locale,
-            'urls' => [ 'Facebook' => $response->link ],
-        ]);
-
-        return $user;
-    }
-
-    public function userUid($response, AccessToken $token)
-    {
-        return $response->id;
-    }
-
-    public function userEmail($response, AccessToken $token)
-    {
-        return isset($response->email) && $response->email ? $response->email : null;
-    }
-
-    public function userScreenName($response, AccessToken $token)
-    {
-        return [$response->first_name, $response->last_name];
-    }
-
-    public function getAccessToken($grant = 'authorization_code', $params = [])
+    public function getAccessToken($grant = 'authorization_code', array $params = [])
     {
         if (isset($params['refresh_token'])) {
             throw new FacebookProviderException('Facebook does not support token refreshing.');
@@ -120,26 +107,58 @@ class Facebook extends AbstractProvider
         return parent::getAccessToken($grant, $params);
     }
 
-    public function throwIDPException(array $result)
+    protected function prepareUserDetails(array $response, AccessToken $token)
     {
-        $result = $result['error'];
+        return new FacebookUser($response);
+    }
 
-        throw new IDPException($result);
+    protected function checkResponse(array $response)
+    {
+        if (!empty($response['error'])) {
+            $message = $response['error']['type'].': '.$response['error']['message'];
+            throw new IdentityProviderException($message, $response['error']['code'], $response);
+        }
     }
 
     /**
+     * Get the expected type of response for this provider.
+     *
      * Pre-Graph v2.3, response types were "string".
      * Starting with v2.3, response types are "json".
+     *
+     * @return string
      */
-    private function setFacebookResponseType()
+    protected function getResponseType()
     {
         switch ($this->graphApiVersion) {
             case 'v1.0':
             case 'v2.0':
             case 'v2.1':
             case 'v2.2':
-                $this->responseType = 'string';
+                return AbstractProvider::RESPONSE_TYPE_STRING;
                 break;
         }
+
+        return AbstractProvider::RESPONSE_TYPE_JSON;
+    }
+
+    /**
+     * Get the base Facebook URL.
+     *
+     * @return string
+     */
+    private function getBaseFacebookUrl()
+    {
+        return $this->enableBetaMode ? static::BASE_FACEBOOK_URL_BETA : static::BASE_FACEBOOK_URL;
+    }
+
+    /**
+     * Get the base Graph API URL.
+     *
+     * @return string
+     */
+    private function getBaseGraphUrl()
+    {
+        return $this->enableBetaMode ? static::BASE_GRAPH_URL_BETA : static::BASE_GRAPH_URL;
     }
 }

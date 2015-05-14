@@ -57,7 +57,7 @@ if (!isset($_GET['code'])) {
 
     // If we don't have an authorization code then get one
     $authUrl = $provider->getAuthorizationUrl();
-    $_SESSION['oauth2state'] = $provider->state;
+    $_SESSION['oauth2state'] = $provider->getState();
     header('Location: '.$authUrl);
     exit;
 
@@ -90,10 +90,10 @@ if (!isset($_GET['code'])) {
     }
 
     // Use this to interact with an API on the users behalf
-    echo $token->accessToken;
+    echo $token->getToken();
 
     // Number of seconds until the access token will expire, and need refreshing
-    echo $token->expires;
+    echo $token->getExpires();
 }
 ```
 
@@ -112,6 +112,17 @@ Each version of the Graph API has breaking changes from one version to the next.
 
 See the [Graph API version schedule](https://developers.facebook.com/docs/apps/changelog) for more info.
 
+### Beta Tier
+
+Facebook has a [beta tier](https://developers.facebook.com/docs/apps/beta-tier) that contains the latest deployments before they are rolled out to production. To enable the beta tier, set the `enableBetaTier` option to `true`.
+
+```php
+$provider = new League\OAuth2\Client\Provider\Facebook([
+    /* . . . */
+    'enableBetaTier'   => true,
+]);
+```
+
 ### Refreshing a Token
 
 Facebook does not support refreshing tokens. In order to get a new "refreshed" token, you must send the user through the login-with-Facebook process again.
@@ -120,7 +131,7 @@ From the [Facebook documentation](https://developers.facebook.com/docs/facebook-
 
 > Once [the access tokens] expire, your app must send the user through the login flow again to generate a new short-lived token.
 
-The following code will throw a `League\OAuth2\Client\Exception\FacebookProviderException`.
+The following code will throw a `League\OAuth2\Client\Provider\Exception\FacebookProviderException`.
 
 ```php
 $grant = new \League\OAuth2\Client\Grant\RefreshToken();

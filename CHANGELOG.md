@@ -1,6 +1,11 @@
 # CHANGELOG
 
 
+## 0.0.6 - May 14, 2015
+
+- Refactored to work with latest 1.0 branch of OAuth 2.0 Client package.
+- Added support for Facebook's [beta tier](https://developers.facebook.com/docs/apps/beta-tier).
+
 ## 0.0.5 - April 21, 2015
 
 - Fixed Graph-specific error response handling.
