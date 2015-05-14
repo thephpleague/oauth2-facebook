@@ -45,56 +45,124 @@ Add the following to your `composer.json` file.
 ### Authorization Code Flow
 
 ```php
+session_start();
+
 $provider = new League\OAuth2\Client\Provider\Facebook([
     'clientId'          => '{facebook-app-id}',
     'clientSecret'      => '{facebook-app-secret}',
     'redirectUri'       => 'https://example.com/callback-url',
-    'scopes'            => ['email', '...', '...'],
     'graphApiVersion'   => 'v2.3',
 ]);
 
 if (!isset($_GET['code'])) {
 
     // If we don't have an authorization code then get one
-    $authUrl = $provider->getAuthorizationUrl();
+    $authUrl = $provider->getAuthorizationUrl([
+        'scope' => ['email', '...', '...'],
+    ]);
     $_SESSION['oauth2state'] = $provider->getState();
-    header('Location: '.$authUrl);
+    
+    echo '<a href="'.$authUrl.'">Log in with Facebook!</a>';
     exit;
 
 // Check given state against previously stored one to mitigate CSRF attack
 } elseif (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
 
     unset($_SESSION['oauth2state']);
-    exit('Invalid state');
+    echo 'Invalid state.';
+    exit;
 
-} else {
-
-    // Try to get an access token (using the authorization code grant)
-    $token = $provider->getAccessToken('authorization_code', [
-        'code' => $_GET['code']
-    ]);
-
-    // Optional: Now you have a token you can look up a users profile data
-    try {
-
-        // We got an access token, let's now get the user's details
-        $userDetails = $provider->getUserDetails($token);
-
-        // Use these details to create a new profile
-        printf('Hello %s!', $userDetails->firstName);
-
-    } catch (Exception $e) {
-
-        // Failed to get user details
-        exit('Oh dear...');
-    }
-
-    // Use this to interact with an API on the users behalf
-    echo $token->getToken();
-
-    // Number of seconds until the access token will expire, and need refreshing
-    echo $token->getExpires();
 }
+
+// Try to get an access token (using the authorization code grant)
+$token = $provider->getAccessToken('authorization_code', [
+    'code' => $_GET['code']
+]);
+
+// Optional: Now you have a token you can look up a users profile data
+try {
+
+    // We got an access token, let's now get the user's details
+    $user = $provider->getUserDetails($token);
+
+    // Use these details to create a new profile
+    printf('Hello %s!', $user->getFirstName());
+    
+    echo '<pre>';
+    var_dump($user);
+    # object(League\OAuth2\Client\Provider\FacebookUser)#10 (1) { ...
+    echo '</pre>';
+
+} catch (Exception $e) {
+
+    // Failed to get user details
+    exit('Oh dear...');
+}
+
+echo '<pre>';
+// Use this to interact with an API on the users behalf
+var_dump($token->getToken());
+# string(217) "CAADAppfn3msBAI7tZBLWg...
+
+// Number of seconds until the access token will expire, and need refreshing
+var_dump($token->getExpires());
+# int(1436825866)
+echo '</pre>';
+```
+
+### The FacebookUser Entity
+
+When using the `getUserDetails()` method to obtain the user node, it will be returned as a `FacebookUser` entity.
+
+```php
+$user = $provider->getUserDetails($token);
+
+$id = $user->getUserId();
+var_dump($id);
+# string(1) "4"
+
+$name = $user->getName();
+var_dump($name);
+# string(15) "Mark Zuckerberg"
+
+$firstName = $user->getFirstName();
+var_dump($firstName);
+# string(4) "Mark"
+
+$lastName = $user->getLastName();
+var_dump($lastName);
+# string(10) "Zuckerberg"
+
+# Requires the "email" permission
+$email = $user->getEmail();
+var_dump($email);
+# string(15) "thezuck@foo.com"
+
+# Requires the "user_hometown" permission
+$hometown = $user->getHometown();
+var_dump($hometown);
+# array(10) { ["id"]=> string(10) "12345567890" ...
+
+# Requires the "user_about_me" permission
+$bio = $user->getBio();
+var_dump($bio);
+# string(426) "All about me...
+
+$pictureUrl = $user->getPictureUrl();
+var_dump($pictureUrl);
+# string(224) "https://fbcdn-profile-a.akamaihd.net/hprofile- ...
+
+$gender = $user->getGender();
+var_dump($gender);
+# string(4) "male"
+
+$locale = $user->getLocale();
+var_dump($locale);
+# string(5) "en_US"
+
+$link = $user->getLink();
+var_dump($link);
+# string(62) "https://www.facebook.com/app_scoped_user_id/1234567890/"
 ```
 
 ### Graph API Version
