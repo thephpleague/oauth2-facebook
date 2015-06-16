@@ -138,6 +138,25 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($token->getUid(), 'Facebook does not return user ID with access token. Expected null.');
     }
 
+    public function testCanGetALongLivedAccessTokenFromShortLivedOne()
+    {
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getHeader')
+            ->times(1)
+            ->andReturn('application/json');
+        $response->shouldReceive('getBody')
+            ->times(1)
+            ->andReturn('{"access_token":"long-lived-token","token_type":"bearer","expires_in":3600}');
+
+        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client->shouldReceive('send')->times(1)->andReturn($response);
+        $this->provider->setHttpClient($client);
+
+        $token = $this->provider->getLongLivedAccessToken('short-lived-token');
+
+        $this->assertEquals('long-lived-token', $token->getToken());
+    }
+
     /**
      * @expectedException \League\OAuth2\Client\Provider\Exception\FacebookProviderException
      */

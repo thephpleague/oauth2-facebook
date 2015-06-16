@@ -107,6 +107,24 @@ class Facebook extends AbstractProvider
         return parent::getAccessToken($grant, $params);
     }
 
+    /**
+     * Exchanges a short-lived access token with a long-lived access-token.
+     *
+     * @param string $accessToken
+     *
+     * @return \League\OAuth2\Client\Token\AccessToken
+     *
+     * @throws FacebookProviderException
+     */
+    public function getLongLivedAccessToken($accessToken)
+    {
+        $params = [
+            'fb_exchange_token' => (string) $accessToken,
+        ];
+
+        return $this->getAccessToken('fb_exchange_token', $params);
+    }
+
     protected function prepareUserDetails(array $response, AccessToken $token)
     {
         return new FacebookUser($response);
