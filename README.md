@@ -207,6 +207,24 @@ $grant = new \League\OAuth2\Client\Grant\RefreshToken();
 $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
 ```
 
+### Long-lived Access Tokens
+
+Facebook will allow you to extend the lifetime of an access token by [exchanging a short-lives access token with a long-lived access token](https://developers.facebook.com/docs/facebook-login/access-tokens#extending).
+
+Once you obtain a short-lived (default) access token, you can exchange it for a long-lived one.
+
+```php
+try {
+    $token = $provider->getLongLivedAccessToken('short-lived-access-token');
+} catch (Exception $e) {
+    echo 'Failed to exchange the token: '.$e->getMessage();
+    exit();
+}
+
+var_dump($token->getToken());
+# string(217) "CAADAppfn3msBAI7tZBLWg...
+```
+
 ## Testing
 
 ``` bash

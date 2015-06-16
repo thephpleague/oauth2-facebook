@@ -1,6 +1,11 @@
 # CHANGELOG
 
 
+## 0.0.7 - June 16, 2015
+
+- Refactored to work with latest 1.0 branch of OAuth 2.0 Client package.
+- Added support for exchanging short-lived access tokens with long-lived access tokens.
+
 ## 0.0.6 - May 14, 2015
 
 - Refactored to work with latest 1.0 branch of OAuth 2.0 Client package.
