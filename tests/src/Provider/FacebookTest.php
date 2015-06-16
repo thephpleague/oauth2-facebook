@@ -117,13 +117,16 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAccessToken()
     {
-        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getHeader')
+            ->times(1)
+            ->andReturn('application/json');
         $response->shouldReceive('getBody')
             ->times(1)
             ->andReturn('{"access_token":"mock_access_token","token_type":"bearer","expires_in":3600}');
 
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
-        $client->shouldReceive('post')->times(1)->andReturn($response);
+        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client->shouldReceive('send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
@@ -185,13 +188,16 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
           'graphApiVersion' => 'v2.2',
         ]);
 
-        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getHeader')
+                 ->times(1)
+                 ->andReturn('application/x-www-form-urlencoded');
         $response->shouldReceive('getBody')
                  ->times(1)
                  ->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
 
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
-        $client->shouldReceive('post')->times(1)->andReturn($response);
+        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client->shouldReceive('send')->times(1)->andReturn($response);
         $provider->setHttpClient($client);
 
         $token = $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
@@ -205,13 +211,16 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     public function testProperlyHandlesErrorResponses()
     {
-        $postResponse = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $postResponse = m::mock('Psr\Http\Message\ResponseInterface');
+        $postResponse->shouldReceive('getHeader')
+                 ->times(1)
+                 ->andReturn('application/json');
         $postResponse->shouldReceive('getBody')
                      ->times(1)
                      ->andReturn('{"error":{"message":"Foo auth error","type":"OAuthException","code":191}}');
 
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
-        $client->shouldReceive('post')->times(1)->andReturn($postResponse);
+        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client->shouldReceive('send')->times(1)->andReturn($postResponse);
         $this->provider->setHttpClient($client);
 
         $errorMessage = '';
