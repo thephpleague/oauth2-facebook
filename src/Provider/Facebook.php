@@ -5,6 +5,7 @@ namespace League\OAuth2\Client\Provider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Provider\Exception\FacebookProviderException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Psr\Http\Message\ResponseInterface;
 
 class Facebook extends AbstractProvider
 {
@@ -136,6 +137,26 @@ class Facebook extends AbstractProvider
             $message = $response['error']['type'].': '.$response['error']['message'];
             throw new IdentityProviderException($message, $response['error']['code'], $response);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getContentType(ResponseInterface $response)
+    {
+        $type = join(';', (array) $response->getHeader('content-type'));
+
+        // Fix for Facebook's pseudo-JSONP support
+        if (strpos($type, 'javascript') !== false) {
+            return 'application/json';
+        }
+
+        // Fix for Facebook's pseudo-urlencoded support
+        if (strpos($type, 'plain') !== false) {
+            return 'application/x-www-form-urlencoded';
+        }
+
+        return $type;
     }
 
     /**
