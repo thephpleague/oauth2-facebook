@@ -144,7 +144,7 @@ class Facebook extends AbstractProvider
      */
     protected function getContentType(ResponseInterface $response)
     {
-        $type = join(';', (array) $response->getHeader('content-type'));
+        $type = parent::getContentType($response);
 
         // Fix for Facebook's pseudo-JSONP support
         if (strpos($type, 'javascript') !== false) {
