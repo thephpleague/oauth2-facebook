@@ -121,28 +121,6 @@ class Facebook extends AbstractProvider
     }
 
     /**
-     * Get the expected type of response for this provider.
-     *
-     * Pre-Graph v2.3, response types were "string".
-     * Starting with v2.3, response types are "json".
-     *
-     * @return string
-     */
-    protected function getResponseType()
-    {
-        switch ($this->graphApiVersion) {
-            case 'v1.0':
-            case 'v2.0':
-            case 'v2.1':
-            case 'v2.2':
-                return AbstractProvider::RESPONSE_TYPE_STRING;
-                break;
-        }
-
-        return AbstractProvider::RESPONSE_TYPE_JSON;
-    }
-
-    /**
      * Get the base Facebook URL.
      *
      * @return string
