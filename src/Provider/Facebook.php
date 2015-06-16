@@ -112,7 +112,7 @@ class Facebook extends AbstractProvider
         return new FacebookUser($response);
     }
 
-    protected function checkResponse(array $response)
+    protected function checkResponse($response)
     {
         if (!empty($response['error'])) {
             $message = $response['error']['type'].': '.$response['error']['message'];
