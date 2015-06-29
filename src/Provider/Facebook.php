@@ -135,7 +135,7 @@ class Facebook extends AbstractProvider
     {
         if (!empty($data['error'])) {
             $message = $data['error']['type'].': '.$data['error']['message'];
-            throw new IdentityProviderException($message, $data['error']['code'], $response);
+            throw new IdentityProviderException($message, $data['error']['code'], $data);
         }
     }
 
