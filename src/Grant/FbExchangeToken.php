@@ -9,10 +9,15 @@ class FbExchangeToken extends AbstractGrant
         return 'fb_exchange_token';
     }
 
-    protected function getRequiredRequestParams()
+    protected function getRequiredRequestParameters()
     {
         return [
             'fb_exchange_token',
         ];
+    }
+
+    protected function getName()
+    {
+        return 'fb_exchange_token';
     }
 }
