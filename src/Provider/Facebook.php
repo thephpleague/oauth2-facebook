@@ -73,12 +73,12 @@ class Facebook extends AbstractProvider
         }
     }
 
-    public function urlAuthorize()
+    public function getBaseAuthorizationUrl()
     {
         return $this->getBaseFacebookUrl().$this->graphApiVersion.'/dialog/oauth';
     }
 
-    public function urlAccessToken()
+    public function getBaseAccessTokenUrl()
     {
         return $this->getBaseGraphUrl().$this->graphApiVersion.'/oauth/access_token';
     }
@@ -88,7 +88,7 @@ class Facebook extends AbstractProvider
         return ['public_profile', 'email'];
     }
 
-    public function urlUserDetails(AccessToken $token)
+    public function getUserDetailsUrl(AccessToken $token)
     {
         $fields = implode(',', [
             'id', 'name', 'first_name', 'last_name',
@@ -131,11 +131,11 @@ class Facebook extends AbstractProvider
         return new FacebookUser($response);
     }
 
-    protected function checkResponse($response)
+    protected function checkResponse(ResponseInterface $response, $data)
     {
-        if (!empty($response['error'])) {
-            $message = $response['error']['type'].': '.$response['error']['message'];
-            throw new IdentityProviderException($message, $response['error']['code'], $response);
+        if (!empty($data['error'])) {
+            $message = $data['error']['type'].': '.$data['error']['message'];
+            throw new IdentityProviderException($message, $data['error']['code'], $response);
         }
     }
 
