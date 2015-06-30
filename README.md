@@ -84,7 +84,7 @@ $token = $provider->getAccessToken('authorization_code', [
 try {
 
     // We got an access token, let's now get the user's details
-    $user = $provider->getUserDetails($token);
+    $user = $provider->getUser($token);
 
     // Use these details to create a new profile
     printf('Hello %s!', $user->getFirstName());
