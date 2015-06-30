@@ -126,7 +126,7 @@ class Facebook extends AbstractProvider
         return $this->getAccessToken('fb_exchange_token', $params);
     }
 
-    protected function prepareUserDetails(array $response, AccessToken $token)
+    protected function createUser(array $response, AccessToken $token)
     {
         return new FacebookUser($response);
     }

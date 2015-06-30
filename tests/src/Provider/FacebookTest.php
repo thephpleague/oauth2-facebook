@@ -177,7 +177,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $token = m::mock('League\OAuth2\Client\Token\AccessToken');
-        $user = $provider->getUserDetails($token);
+        $user = $provider->getUser($token);
 
         $this->assertEquals(12345, $user->getUserId($token));
         $this->assertEquals('mock_name', $user->getName($token));
