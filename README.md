@@ -113,10 +113,10 @@ echo '</pre>';
 
 ### The FacebookUser Entity
 
-When using the `getUserDetails()` method to obtain the user node, it will be returned as a `FacebookUser` entity.
+When using the `getUser()` method to obtain the user node, it will be returned as a `FacebookUser` entity.
 
 ```php
-$user = $provider->getUserDetails($token);
+$user = $provider->getUser($token);
 
 $id = $user->getUserId();
 var_dump($id);
