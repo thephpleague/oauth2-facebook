@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## 0.0.9 - June 30, 2015
+
+- Additional fixes for oAuth Client v1.0 alpha 1
+
 ## 0.0.8 - June 16, 2015
 
 - Fix for "funny" Facebook `content-type` responses.
