@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## 0.0.10 - July 8, 2015
+
+- Fixes for most recent oAuth Client changes before stable release.
+
 ## 0.0.9 - June 30, 2015
 
 - Additional fixes for oAuth Client v1.0 alpha 1
