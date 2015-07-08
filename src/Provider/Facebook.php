@@ -78,7 +78,7 @@ class Facebook extends AbstractProvider
         return $this->getBaseFacebookUrl().$this->graphApiVersion.'/dialog/oauth';
     }
 
-    public function getBaseAccessTokenUrl()
+    public function getBaseAccessTokenUrl(array $params)
     {
         return $this->getBaseGraphUrl().$this->graphApiVersion.'/oauth/access_token';
     }

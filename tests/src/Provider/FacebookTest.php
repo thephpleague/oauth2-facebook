@@ -60,7 +60,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     public function testGetBaseAccessTokenUrl()
     {
-        $url = $this->provider->getBaseAccessTokenUrl();
+        $url = $this->provider->getBaseAccessTokenUrl([]);
         $uri = parse_url($url);
         $graphVersion = static::GRAPH_API_VERSION;
 
@@ -76,7 +76,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
         $urlAuthorize = $provider->getBaseAuthorizationUrl();
-        $urlAccessToken = $provider->getBaseAccessTokenUrl();
+        $urlAccessToken = $provider->getBaseAccessTokenUrl([]);
         $urlUserDetails = parse_url($provider->getUserDetailsUrl($fooToken), PHP_URL_PATH);
 
         $this->assertEquals('https://www.facebook.com/'.$graphVersion.'/dialog/oauth', $urlAuthorize);
@@ -90,7 +90,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
         $urlAuthorize = $this->provider->getBaseAuthorizationUrl();
-        $urlAccessToken = $this->provider->getBaseAccessTokenUrl();
+        $urlAccessToken = $this->provider->getBaseAccessTokenUrl([]);
         $urlUserDetails = parse_url($this->provider->getUserDetailsUrl($fooToken), PHP_URL_PATH);
 
         $this->assertEquals('https://www.facebook.com/'.$graphVersion.'/dialog/oauth', $urlAuthorize);
@@ -107,7 +107,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
         $urlAuthorize = parse_url($provider->getBaseAuthorizationUrl(), PHP_URL_HOST);
-        $urlAccessToken = parse_url($provider->getBaseAccessTokenUrl(), PHP_URL_HOST);
+        $urlAccessToken = parse_url($provider->getBaseAccessTokenUrl([]), PHP_URL_HOST);
         $urlUserDetails = parse_url($provider->getUserDetailsUrl($fooToken), PHP_URL_HOST);
 
         $this->assertEquals('www.beta.facebook.com', $urlAuthorize);
