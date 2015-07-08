@@ -52,7 +52,7 @@ $provider = new League\OAuth2\Client\Provider\Facebook([
     'clientId'          => '{facebook-app-id}',
     'clientSecret'      => '{facebook-app-secret}',
     'redirectUri'       => 'https://example.com/callback-url',
-    'graphApiVersion'   => 'v2.3',
+    'graphApiVersion'   => 'v2.4',
 ]);
 
 if (!isset($_GET['code'])) {
@@ -173,7 +173,7 @@ The `graphApiVersion` option is required. If it is not set, an `\InvalidArgument
 ```php
 $provider = new League\OAuth2\Client\Provider\Facebook([
     /* . . . */
-    'graphApiVersion'   => 'v2.3',
+    'graphApiVersion'   => 'v2.4',
 ]);
 ```
 
