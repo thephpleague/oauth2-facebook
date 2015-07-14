@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class FacebookUser implements UserInterface
+class FacebookUser implements ResourceOwnerInterface
 {
     /**
      * @var array
@@ -26,7 +26,7 @@ class FacebookUser implements UserInterface
      *
      * @return string|null
      */
-    public function getUserId()
+    public function getId()
     {
         return $this->getField('id');
     }

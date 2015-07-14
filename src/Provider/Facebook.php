@@ -88,7 +88,7 @@ class Facebook extends AbstractProvider
         return ['public_profile', 'email'];
     }
 
-    public function getUserDetailsUrl(AccessToken $token)
+    public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
         $fields = implode(',', [
             'id', 'name', 'first_name', 'last_name',
@@ -126,7 +126,7 @@ class Facebook extends AbstractProvider
         return $this->getAccessToken('fb_exchange_token', $params);
     }
 
-    protected function createUser(array $response, AccessToken $token)
+    protected function createResourceOwner(array $response, AccessToken $token)
     {
         return new FacebookUser($response);
     }

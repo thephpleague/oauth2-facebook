@@ -84,7 +84,7 @@ $token = $provider->getAccessToken('authorization_code', [
 try {
 
     // We got an access token, let's now get the user's details
-    $user = $provider->getUser($token);
+    $user = $provider->getResourceOwner($token);
 
     // Use these details to create a new profile
     printf('Hello %s!', $user->getFirstName());
@@ -113,12 +113,12 @@ echo '</pre>';
 
 ### The FacebookUser Entity
 
-When using the `getUser()` method to obtain the user node, it will be returned as a `FacebookUser` entity.
+When using the `getResourceOwner()` method to obtain the user node, it will be returned as a `FacebookUser` entity.
 
 ```php
-$user = $provider->getUser($token);
+$user = $provider->getResourceOwner($token);
 
-$id = $user->getUserId();
+$id = $user->getId();
 var_dump($id);
 # string(1) "4"
 

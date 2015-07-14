@@ -9,7 +9,7 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 class FooFacebookProvider extends Facebook
 {
-    protected function fetchUserDetails(AccessToken $token)
+    protected function fetchResourceOwnerDetails(AccessToken $token)
     {
         return json_decode('{"id": 12345, "name": "mock_name", "username": "mock_username", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "Location": "mock_home", "bio": "mock_description", "link": "mock_facebook_url"}', true);
     }
@@ -77,7 +77,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
         $urlAuthorize = $provider->getBaseAuthorizationUrl();
         $urlAccessToken = $provider->getBaseAccessTokenUrl([]);
-        $urlUserDetails = parse_url($provider->getUserDetailsUrl($fooToken), PHP_URL_PATH);
+        $urlUserDetails = parse_url($provider->getResourceOwnerDetailsUrl($fooToken), PHP_URL_PATH);
 
         $this->assertEquals('https://www.facebook.com/'.$graphVersion.'/dialog/oauth', $urlAuthorize);
         $this->assertEquals('https://graph.facebook.com/'.$graphVersion.'/oauth/access_token', $urlAccessToken);
@@ -91,7 +91,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
         $urlAuthorize = $this->provider->getBaseAuthorizationUrl();
         $urlAccessToken = $this->provider->getBaseAccessTokenUrl([]);
-        $urlUserDetails = parse_url($this->provider->getUserDetailsUrl($fooToken), PHP_URL_PATH);
+        $urlUserDetails = parse_url($this->provider->getResourceOwnerDetailsUrl($fooToken), PHP_URL_PATH);
 
         $this->assertEquals('https://www.facebook.com/'.$graphVersion.'/dialog/oauth', $urlAuthorize);
         $this->assertEquals('https://graph.facebook.com/'.$graphVersion.'/oauth/access_token', $urlAccessToken);
@@ -108,7 +108,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
         $urlAuthorize = parse_url($provider->getBaseAuthorizationUrl(), PHP_URL_HOST);
         $urlAccessToken = parse_url($provider->getBaseAccessTokenUrl([]), PHP_URL_HOST);
-        $urlUserDetails = parse_url($provider->getUserDetailsUrl($fooToken), PHP_URL_HOST);
+        $urlUserDetails = parse_url($provider->getResourceOwnerDetailsUrl($fooToken), PHP_URL_HOST);
 
         $this->assertEquals('www.beta.facebook.com', $urlAuthorize);
         $this->assertEquals('graph.beta.facebook.com', $urlAccessToken);
@@ -135,7 +135,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertLessThanOrEqual(time() + 3600, $token->getExpires());
         $this->assertGreaterThanOrEqual(time(), $token->getExpires());
         $this->assertNull($token->getRefreshToken(), 'Facebook does not support refresh tokens. Expected null.');
-        $this->assertNull($token->getUid(), 'Facebook does not return user ID with access token. Expected null.');
+        $this->assertNull($token->getResourceOwnerId(), 'Facebook does not return user ID with access token. Expected null.');
     }
 
     public function testCanGetALongLivedAccessTokenFromShortLivedOne()
@@ -177,9 +177,9 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $token = m::mock('League\OAuth2\Client\Token\AccessToken');
-        $user = $provider->getUser($token);
+        $user = $provider->getResourceOwner($token);
 
-        $this->assertEquals(12345, $user->getUserId($token));
+        $this->assertEquals(12345, $user->getId($token));
         $this->assertEquals('mock_name', $user->getName($token));
         $this->assertEquals('mock_first_name', $user->getFirstName($token));
         $this->assertEquals('mock_last_name', $user->getLastName($token));
@@ -213,7 +213,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
                  ->andReturn('application/x-www-form-urlencoded');
         $response->shouldReceive('getBody')
                  ->times(1)
-                 ->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
+                 ->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token');
 
         $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('send')->times(1)->andReturn($response);
@@ -225,7 +225,6 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertLessThanOrEqual(time() + 3600, $token->getExpires());
         $this->assertGreaterThanOrEqual(time(), $token->getExpires());
         $this->assertEquals('mock_refresh_token', $token->getRefreshToken());
-        $this->assertEquals('1', $token->getUid());
     }
 
     public function testProperlyHandlesErrorResponses()

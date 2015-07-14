@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## 0.0.11 - July 14, 2015
+
+- Renamed references from "user" to "resource owner" per [#376](https://github.com/thephpleague/oauth2-client/pull/376).
+
 ## 0.0.10 - July 8, 2015
 
 - Fixes for most recent oAuth Client changes before stable release.
