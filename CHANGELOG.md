@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## 0.0.12 - July 28, 2015
+
+- Added a method `asArray()` to `FacebookUser` to get all the data from the User node as a plain-old PHP array.
+
 ## 0.0.11 - July 14, 2015
 
 - Renamed references from "user" to "resource owner" per [#376](https://github.com/thephpleague/oauth2-client/pull/376).

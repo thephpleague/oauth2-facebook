@@ -132,6 +132,16 @@ class FacebookUser implements ResourceOwnerInterface
     }
 
     /**
+     * Returns all the data obtained about the user.
+     *
+     * @return array
+     */
+    public function asArray()
+    {
+        return $this->data;
+    }
+
+    /**
      * Returns a field from the Graph node data.
      *
      * @param string $key
