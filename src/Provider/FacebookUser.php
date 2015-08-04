@@ -96,7 +96,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return array|null
      */
-    public function getPictureUrl()
+    public function getImageurl()
     {
         return $this->getField('picture_url');
     }

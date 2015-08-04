@@ -149,7 +149,7 @@ $bio = $user->getBio();
 var_dump($bio);
 # string(426) "All about me...
 
-$pictureUrl = $user->getPictureUrl();
+$pictureUrl = $user->getImageurl();
 var_dump($pictureUrl);
 # string(224) "https://fbcdn-profile-a.akamaihd.net/hprofile- ...
 
