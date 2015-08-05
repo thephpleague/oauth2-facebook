@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## 1.0.0 Alpha 1 - August 5, 2015
+
+- Tagged an alpha release since we're closer to launch.
+
 ## 0.0.12 - July 28, 2015
 
 - Added a method `asArray()` to `FacebookUser` to get all the data from the User node as a plain-old PHP array.
