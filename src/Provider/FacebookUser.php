@@ -136,7 +136,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return array
      */
-    public function asArray()
+    public function toArray()
     {
         return $this->data;
     }
