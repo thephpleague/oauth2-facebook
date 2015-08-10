@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## 1.0.0 Alpha 2 - August 10, 2015
+
+- Renamed `asArray()` to  `toArray()` on `FacebookUser` to match the interface.
+
 ## 1.0.0 Alpha 1 - August 5, 2015
 
 - Tagged an alpha release since we're closer to launch.

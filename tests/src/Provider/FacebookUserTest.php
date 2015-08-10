@@ -33,9 +33,9 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo.com/pic.jpg', $this->user->getPictureUrl());
     }
 
-    public function testCanGetAllDataBackAsArray()
+    public function testCanGetAllDataBackAsAnArray()
     {
-        $data = $this->user->asArray();
+        $data = $this->user->toArray();
 
         $expectedData = [
           'id' => '4',

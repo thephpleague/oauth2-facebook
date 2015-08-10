@@ -166,10 +166,10 @@ var_dump($link);
 # string(62) "https://www.facebook.com/app_scoped_user_id/1234567890/"
 ```
 
-You can also get all the data from the User node as a plain-old PHP array with `asArray()`.
+You can also get all the data from the User node as a plain-old PHP array with `toArray()`.
 
 ```php
-$userData = $user->asArray();
+$userData = $user->toArray();
 ```
 
 ### Graph API Version
