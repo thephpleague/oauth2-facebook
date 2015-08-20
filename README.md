@@ -27,19 +27,13 @@ The following versions of PHP are supported.
 
 Add the following to your `composer.json` file.
 
-> **Note:** Once version 1.0 of the [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client) is released, you'll be able to install from composer without the `@dev` minimum stability flag.
-
 ```json
 {
     "require": {
-        "league/oauth2-facebook": "~0.0@dev",
-        "league/oauth2-client": "~1.0@dev"
+        "league/oauth2-facebook": "~1.0"
     }
 }
 ```
-
-> **Note:** OAuth 2.0 Client v1.0 is still in dev mode so you'll need to require it explicitly in your require using the `@dev` minimum stability flag since [composer won't pull in a dev mode dependency of a dependency](https://getcomposer.org/doc/faqs/why-can%27t-composer-load-repositories-recursively.md).
-
 
 ## Usage
 
