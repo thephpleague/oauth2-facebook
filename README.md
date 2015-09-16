@@ -229,6 +229,40 @@ var_dump($token->getToken());
 # string(217) "CAADAppfn3msBAI7tZBLWg...
 ```
 
+### Getting Additional Data
+
+Once you've obtained a user access token you can make additional requests to the Graph API using your [favorite HTTP client](https://github.com/guzzle/guzzle) to send the requests. For this example, we'll just use PHP's built-in `file_get_contents()` as our HTTP client to grab 5 events from the the authenticated user.
+
+```php
+// Get 5 events from authenticated user
+// Requires the `user_events` permission
+$baseUrl = 'https://graph.facebook.com/v2.4';
+$params = http_build_query([
+    'fields' => 'id,name,start_time',
+    'limit' => '5',
+    'access_token' => $token->getToken(),
+    'appsecret_proof' => hash_hmac('sha256', $token->getToken(), '{facebook-app-secret}'),
+]);
+$response = file_get_contents($baseUrl.'/me/events?'.$params);
+
+// Raw JSON response from the Graph API
+var_dump($response);
+# string(1190) "{"data":[{"id":"123","name":"Derby City Swing 2016","start_time":"2016-01-28T17:00:00-0500"} ...
+
+// Response as a plain-old PHP array
+$data = json_decode($response, true);
+var_dump($data);
+# array(2) { ["data"]=> array(5) { ...
+```
+
+See more about:
+
+- [The `/{user-id}/events` edge](https://developers.facebook.com/docs/graph-api/reference/user/events).
+- [The `appsecret_proof`](https://developers.facebook.com/docs/graph-api/securing-requests).
+- [The `file_get_contents()` function](http://php.net/file_get_contents).
+
+If you need to make even more complex queries to the Graph API to get lots of data back with just one request, check out the [Facebook Query Builder](https://github.com/SammyK/FacebookQueryBuilder).
+
 ## Testing
 
 ``` bash
