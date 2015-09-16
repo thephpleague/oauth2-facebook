@@ -16,6 +16,7 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
         $this->user = new FacebookUser([
             'id' => '4',
             'picture' => ['data' => ['url' => 'foo.com/pic.jpg']],
+            'cover' => ['id' => '123', 'source' => 'foo.com/cover.jpg'],
             'first_name' => 'Mark',
             'last_name' => 'Zuck',
             'foo' => 'bar',
@@ -28,9 +29,10 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->user->getGender());
     }
 
-    public function testProperlyMutatesPictureUrl()
+    public function testProperlyMutatesPhotoUrls()
     {
         $this->assertEquals('foo.com/pic.jpg', $this->user->getPictureUrl());
+        $this->assertEquals('foo.com/cover.jpg', $this->user->getCoverPhotoUrl());
     }
 
     public function testCanGetAllDataBackAsAnArray()
@@ -40,10 +42,12 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
         $expectedData = [
           'id' => '4',
           'picture' => ['data' => ['url' => 'foo.com/pic.jpg']],
+          'cover' => ['id' => '123', 'source' => 'foo.com/cover.jpg'],
           'first_name' => 'Mark',
           'last_name' => 'Zuck',
           'foo' => 'bar',
           'picture_url' => 'foo.com/pic.jpg',
+          'cover_photo_url' => 'foo.com/cover.jpg',
         ];
 
         $this->assertEquals($expectedData, $data);

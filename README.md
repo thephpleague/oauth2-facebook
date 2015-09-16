@@ -147,6 +147,10 @@ $pictureUrl = $user->getPictureUrl();
 var_dump($pictureUrl);
 # string(224) "https://fbcdn-profile-a.akamaihd.net/hprofile- ...
 
+$coverPhotoUrl = $user->getCoverPhotoUrl();
+var_dump($coverPhotoUrl);
+# string(111) "https://fbcdn-profile-a.akamaihd.net/hphotos- ...
+
 $gender = $user->getGender();
 var_dump($gender);
 # string(4) "male"
