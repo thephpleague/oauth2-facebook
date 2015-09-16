@@ -92,9 +92,9 @@ class FacebookUser implements ResourceOwnerInterface
     }
 
     /**
-     * Returns the picture of the user as a GraphPicture
+     * Returns the profile picture of the user as a string if present.
      *
-     * @return array|null
+     * @return string|null
      */
     public function getPictureUrl()
     {
