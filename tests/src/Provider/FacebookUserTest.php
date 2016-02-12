@@ -47,6 +47,7 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
           'last_name' => 'Zuck',
           'foo' => 'bar',
           'picture_url' => 'foo.com/pic.jpg',
+          'is_silhouette' => true,
           'cover_photo_url' => 'foo.com/cover.jpg',
         ];
 
