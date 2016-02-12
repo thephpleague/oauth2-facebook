@@ -92,7 +92,7 @@ class Facebook extends AbstractProvider
     {
         $fields = implode(',', [
             'id', 'name', 'first_name', 'last_name',
-            'email', 'hometown', 'bio', 'picture.type(large){url}',
+            'email', 'hometown', 'bio', 'picture',
             'cover{source}', 'gender', 'locale', 'link',
         ]);
 
