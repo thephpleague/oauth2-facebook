@@ -20,6 +20,10 @@ class FacebookUser implements ResourceOwnerInterface
             $this->data['picture_url'] = $response['picture']['data']['url'];
         }
 
+        if (!empty($response['picture']['data']['is_silhouette'])) {
+            $this->data['is_silhouette'] = $response['picture']['data']['is_silhouette'];
+        }
+
         if (!empty($response['cover']['source'])) {
             $this->data['cover_photo_url'] = $response['cover']['source'];
         }
@@ -93,6 +97,17 @@ class FacebookUser implements ResourceOwnerInterface
     public function getBio()
     {
         return $this->getField('bio');
+    }
+
+    /**
+     * Returns if user has not defined a specific avatar
+     *
+     * @return boolean
+     */
+
+    public function isDefaultPicture()
+    {
+        return $this->getField('is_silhouette');
     }
 
     /**

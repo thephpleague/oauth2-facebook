@@ -15,7 +15,7 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
     {
         $this->user = new FacebookUser([
             'id' => '4',
-            'picture' => ['data' => ['url' => 'foo.com/pic.jpg']],
+            'picture' => ['data' => ['is_silhouette' => true, 'url' => 'foo.com/pic.jpg']],
             'cover' => ['id' => '123', 'source' => 'foo.com/cover.jpg'],
             'first_name' => 'Mark',
             'last_name' => 'Zuck',
@@ -41,12 +41,13 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
 
         $expectedData = [
           'id' => '4',
-          'picture' => ['data' => ['url' => 'foo.com/pic.jpg']],
+          'picture' => ['data' => ['is_silhouette' => true, 'url' => 'foo.com/pic.jpg']],
           'cover' => ['id' => '123', 'source' => 'foo.com/cover.jpg'],
           'first_name' => 'Mark',
           'last_name' => 'Zuck',
           'foo' => 'bar',
           'picture_url' => 'foo.com/pic.jpg',
+          'is_silhouette' => true,
           'cover_photo_url' => 'foo.com/cover.jpg',
         ];
 
