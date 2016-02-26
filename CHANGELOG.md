@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.2.0 - February 24, 2016
+
+- Added `isDefaultPicture()` method to `FacebookUser`.
+
 ## 1.1.0 - September 16, 2015
 
 - Added `getCoverPhotoUrl()` method to `FacebookUser`.
