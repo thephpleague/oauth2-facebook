@@ -20,6 +20,7 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
             'first_name' => 'Mark',
             'last_name' => 'Zuck',
             'foo' => 'bar',
+            'timezone' => '-8',
         ]);
     }
 
@@ -49,6 +50,7 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
           'picture_url' => 'foo.com/pic.jpg',
           'is_silhouette' => true,
           'cover_photo_url' => 'foo.com/cover.jpg',
+          'timezone' => '-8',
         ];
 
         $this->assertEquals($expectedData, $data);

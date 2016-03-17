@@ -161,6 +161,16 @@ class FacebookUser implements ResourceOwnerInterface
     }
 
     /**
+     * Returns the current timezone offset from UTC (from -24 to 24)
+     *
+     * @return float|null
+     */
+    public function getTimezone()
+    {
+        return $this->getField('timezone');
+    }
+
+    /**
      * Returns all the data obtained about the user.
      *
      * @return array
