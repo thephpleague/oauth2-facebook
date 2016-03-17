@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.3.0 - March 17, 2016
+
+- Added `getTimezone()` method to `FacebookUser`.
+
 ## 1.2.0 - February 24, 2016
 
 - Added `isDefaultPicture()` method to `FacebookUser`.
