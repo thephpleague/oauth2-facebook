@@ -96,7 +96,9 @@ class Facebook extends AbstractProvider
             'cover{source}', 'gender', 'locale', 'link', 'timezone'
         ]);
 
-        return $this->getBaseGraphUrl().$this->graphApiVersion.'/me?fields='.$fields.'&access_token='.$token;
+        $appsecretProof = hash_hmac('sha256', $token->getToken(), $this->clientSecret);
+
+        return $this->getBaseGraphUrl().$this->graphApiVersion.'/me?fields='.$fields.'&access_token='.$token.'&appsecret_proof='.$appsecretProof;
     }
 
     public function getAccessToken($grant = 'authorization_code', array $params = [])
