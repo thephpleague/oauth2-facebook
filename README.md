@@ -147,6 +147,10 @@ $pictureUrl = $user->getPictureUrl();
 var_dump($pictureUrl);
 # string(224) "https://fbcdn-profile-a.akamaihd.net/hprofile- ...
 
+$isDefaultPicture = $user->isDefaultPicture();
+var_dump($isDefaultPicture);
+# boolean false
+
 $coverPhotoUrl = $user->getCoverPhotoUrl();
 var_dump($coverPhotoUrl);
 # string(111) "https://fbcdn-profile-a.akamaihd.net/hphotos- ...
@@ -158,6 +162,10 @@ var_dump($gender);
 $locale = $user->getLocale();
 var_dump($locale);
 # string(5) "en_US"
+
+$timezone = $user->getTimezone();
+var_dump($timezone);
+# int -5
 
 $link = $user->getLink();
 var_dump($link);
