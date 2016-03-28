@@ -99,7 +99,7 @@ echo '<pre>';
 var_dump($token->getToken());
 # string(217) "CAADAppfn3msBAI7tZBLWg...
 
-// Number of seconds until the access token will expire, and need refreshing
+// The time (in epoch time) when an access token will expire
 var_dump($token->getExpires());
 # int(1436825866)
 echo '</pre>';
