@@ -254,4 +254,15 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('OAuthException: Foo auth error', $errorMessage);
         $this->assertEquals(191, $errorCode);
     }
+
+    public function testAnAppSecretProofWillBeAppendedToRequestUrl()
+    {
+        $provider = new Facebook([
+            'graphApiVersion' => 'v0.0',
+            'clientSecret' => 'foo_secret',
+        ]);
+        $fooToken = new AccessToken(['access_token' => 'foo_token']);
+
+        $this->assertContains('&appsecret_proof=df4256903ba4e23636cc142117aa632133d75c642bd2a68955be1443bd14deb9', $provider->getResourceOwnerDetailsUrl($fooToken));
+    }
 }
