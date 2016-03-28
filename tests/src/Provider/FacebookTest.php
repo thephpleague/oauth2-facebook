@@ -72,6 +72,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $graphVersion = 'v13.37';
         $provider = new Facebook([
             'graphApiVersion' => $graphVersion,
+            'clientSecret' => 'mock_secret',
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
@@ -101,8 +102,9 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
     public function testTheBetaTierCanBeEnabled()
     {
         $provider = new Facebook([
-          'graphApiVersion' => 'v0.0',
-          'enableBetaTier' => true,
+            'graphApiVersion' => 'v0.0',
+            'clientSecret' => 'mock_secret',
+            'enableBetaTier' => true,
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
