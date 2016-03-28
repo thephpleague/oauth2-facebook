@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.4.0 - March 28, 2016
+
+- Now all requests to the Graph API have the [app secret proof](https://developers.facebook.com/docs/graph-api/securing-requests#appsecret_proof) appended to the URL automatically.
+- Fixed a bug with `isDefaultPicture()` not recognizing `false`.
+- Added list of development files to be ignored when `--prefer-dist` flag is set in Composer for faster installs.
+
 ## 1.3.0 - March 17, 2016
 
 - Added `getTimezone()` method to `FacebookUser`.
