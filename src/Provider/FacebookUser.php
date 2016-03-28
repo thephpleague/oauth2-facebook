@@ -20,7 +20,7 @@ class FacebookUser implements ResourceOwnerInterface
             $this->data['picture_url'] = $response['picture']['data']['url'];
         }
 
-        if (!empty($response['picture']['data']['is_silhouette'])) {
+        if (isset($response['picture']['data']['is_silhouette'])) {
             $this->data['is_silhouette'] = $response['picture']['data']['is_silhouette'];
         }
 
