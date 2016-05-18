@@ -42,7 +42,7 @@ Add the following to your `composer.json` file.
 ```php
 session_start();
 
-$provider = new League\OAuth2\Client\Provider\Facebook([
+$provider = new \League\OAuth2\Client\Provider\Facebook([
     'clientId'          => '{facebook-app-id}',
     'clientSecret'      => '{facebook-app-secret}',
     'redirectUri'       => 'https://example.com/callback-url',
@@ -88,7 +88,7 @@ try {
     # object(League\OAuth2\Client\Provider\FacebookUser)#10 (1) { ...
     echo '</pre>';
 
-} catch (Exception $e) {
+} catch (\Exception $e) {
 
     // Failed to get user details
     exit('Oh dear...');
