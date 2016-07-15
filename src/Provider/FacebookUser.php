@@ -170,6 +170,20 @@ class FacebookUser implements ResourceOwnerInterface
         return $this->getField('timezone');
     }
 
+    public function getMinAge()
+    {
+        if (!empty($this->data['age_range'])
+            && !empty($this->data['age_range']['min']))
+            return $this->data['age_range']['min'];
+    }
+
+    public function getMaxAge()
+    {
+        if (!empty($this->data['age_range'])
+            && !empty($this->data['age_range']['max']))
+            return $this->data['age_range']['max'];
+    }
+
     /**
      * Returns all the data obtained about the user.
      *

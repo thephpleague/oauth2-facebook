@@ -93,7 +93,7 @@ class Facebook extends AbstractProvider
         $fields = implode(',', [
             'id', 'name', 'first_name', 'last_name',
             'email', 'hometown', 'bio', 'picture.type(large){url,is_silhouette}',
-            'cover{source}', 'gender', 'locale', 'link', 'timezone'
+            'cover{source}', 'gender', 'locale', 'link', 'timezone', 'age_range'
         ]);
         $appSecretProof = AppSecretProof::create($this->clientSecret, $token->getToken());
 
