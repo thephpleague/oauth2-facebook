@@ -177,8 +177,10 @@ class FacebookUser implements ResourceOwnerInterface
      */
     public function getMinAge()
     {
-        if (array_key_exists('min', $this->getField('age_range')))
+        if (isset($this->data['age_range']['min'])) {
             return $this->data['age_range']['min'];
+        }
+        return null;
     }
 
     /**
@@ -188,8 +190,10 @@ class FacebookUser implements ResourceOwnerInterface
      */
     public function getMaxAge()
     {
-        if (array_key_exists('max', $this->getField('age_range')))
+        if (isset($this->data['age_range']['max'])) {
             return $this->data['age_range']['max'];
+        }
+        return null;
     }
 
     /**
