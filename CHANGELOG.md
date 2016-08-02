@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 1.4.2 - August 2, 2016
+
+- Added the `age_range` field to the User node.
+- Added the `getMaxAge()` and `getMinAge()` methods to `FacebookUser`.
+
+## 1.4.1 - March 28, 2016
+
+- Fixed the unit tests for HHVM.
+
 ## 1.4.0 - March 28, 2016
 
 - Now all requests to the Graph API have the [app secret proof](https://developers.facebook.com/docs/graph-api/securing-requests#appsecret_proof) appended to the URL automatically.

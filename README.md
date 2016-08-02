@@ -170,6 +170,14 @@ var_dump($timezone);
 $link = $user->getLink();
 var_dump($link);
 # string(62) "https://www.facebook.com/app_scoped_user_id/1234567890/"
+
+$maxAge = $user->getMaxAge();
+var_dump($maxAge);
+# int 17 | null
+
+$minAge = $user->getMinAge();
+var_dump($minAge);
+# int 21
 ```
 
 You can also get all the data from the User node as a plain-old PHP array with `toArray()`.
