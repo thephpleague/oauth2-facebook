@@ -171,6 +171,32 @@ class FacebookUser implements ResourceOwnerInterface
     }
 
     /**
+     * Returns the lower bound of the user's age range
+     *
+     * @return integer|null
+     */
+    public function getMinAge()
+    {
+        if (isset($this->data['age_range']['min'])) {
+            return $this->data['age_range']['min'];
+        }
+        return null;
+    }
+
+    /**
+     * Returns the upper bound of the user's age range
+     *
+     * @return integer|null
+     */
+    public function getMaxAge()
+    {
+        if (isset($this->data['age_range']['max'])) {
+            return $this->data['age_range']['max'];
+        }
+        return null;
+    }
+
+    /**
      * Returns all the data obtained about the user.
      *
      * @return array

@@ -21,7 +21,14 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
             'last_name' => 'Zuck',
             'foo' => 'bar',
             'timezone' => '-8',
+            'age_range' => ['min' => 21],
         ]);
+    }
+
+    public function testMinAndMaxAgeReturnAgeOrNull()
+    {
+        $this->assertEquals(21, $this->user->getMinAge());
+        $this->assertNull($this->user->getMaxAge());
     }
 
     public function testGettersReturnNullWhenNoKeyExists()
@@ -51,6 +58,7 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
           'is_silhouette' => true,
           'cover_photo_url' => 'foo.com/cover.jpg',
           'timezone' => '-8',
+          'age_range' => ['min' => 21],
         ];
 
         $this->assertEquals($expectedData, $data);
