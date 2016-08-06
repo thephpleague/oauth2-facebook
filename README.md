@@ -46,7 +46,7 @@ $provider = new \League\OAuth2\Client\Provider\Facebook([
     'clientId'          => '{facebook-app-id}',
     'clientSecret'      => '{facebook-app-secret}',
     'redirectUri'       => 'https://example.com/callback-url',
-    'graphApiVersion'   => 'v2.6',
+    'graphApiVersion'   => 'v2.7',
 ]);
 
 if (!isset($_GET['code'])) {
@@ -193,7 +193,7 @@ The `graphApiVersion` option is required. If it is not set, an `\InvalidArgument
 ```php
 $provider = new League\OAuth2\Client\Provider\Facebook([
     /* . . . */
-    'graphApiVersion'   => 'v2.6',
+    'graphApiVersion'   => 'v2.7',
 ]);
 ```
 
@@ -252,7 +252,7 @@ Once you've obtained a user access token you can make additional requests to the
 ```php
 // Get 5 events from authenticated user
 // Requires the `user_events` permission
-$baseUrl = 'https://graph.facebook.com/v2.6';
+$baseUrl = 'https://graph.facebook.com/v2.7';
 $params = http_build_query([
     'fields' => 'id,name,start_time',
     'limit' => '5',
