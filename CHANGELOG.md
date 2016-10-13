@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.4.3 - October 13, 2016
+
+- Added Graph API version number validation to give a more descriptive error message. (#26)
+
 ## 1.4.2 - August 2, 2016
 
 - Added the `age_range` field to the User node.
