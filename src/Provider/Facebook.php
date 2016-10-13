@@ -38,6 +38,13 @@ class Facebook extends AbstractProvider
     const BASE_GRAPH_URL_BETA = 'https://graph.beta.facebook.com/';
 
     /**
+     * Regular expression used to check for graph API version format
+     *
+     * @const string
+     */
+    const GRAPH_API_VERSION_REGEX = '~^v\d+\.\d+$~';
+    
+    /**
      * The Graph API version to use for requests.
      *
      * @var string
@@ -63,6 +70,9 @@ class Facebook extends AbstractProvider
 
         if (empty($options['graphApiVersion'])) {
             $message = 'The "graphApiVersion" option not set. Please set a default Graph API version.';
+            throw new \InvalidArgumentException($message);
+        } elseif (!preg_match(self::GRAPH_API_VERSION_REGEX, $options['graphApiVersion'])) {
+            $message = 'The "graphApiVersion" must start with letter "v" followed by version number, ie: "v2.4".';
             throw new \InvalidArgumentException($message);
         }
 
