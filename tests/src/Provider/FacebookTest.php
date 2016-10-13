@@ -99,6 +99,16 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/'.$graphVersion.'/me', $urlUserDetails);
     }
 
+    public function testGraphApiVersionWillCheckFormat()
+    {
+        $this->setExpectedException(\InvalidArgumentException::class);
+        $graphVersion = '2.4';
+        $provider = new Facebook([
+            'graphApiVersion' => $graphVersion,
+            'clientSecret' => 'mock_secret',
+        ]);
+    }
+
     public function testTheBetaTierCanBeEnabled()
     {
         $provider = new Facebook([
