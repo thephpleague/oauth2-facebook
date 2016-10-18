@@ -100,14 +100,20 @@ class Facebook extends AbstractProvider
 
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        $fields = implode(',', [
+        $fields = [
             'id', 'name', 'first_name', 'last_name',
-            'email', 'hometown', 'bio', 'picture.type(large){url,is_silhouette}',
+            'email', 'hometown', 'picture.type(large){url,is_silhouette}',
             'cover{source}', 'gender', 'locale', 'link', 'timezone', 'age_range'
-        ]);
+        ];
+
+        // backwards compatibility less than 2.8
+        if ((float) substr($this->graphApiVersion, 1) < 2.8) {
+            $fields[] = 'bio';
+        }
+
         $appSecretProof = AppSecretProof::create($this->clientSecret, $token->getToken());
 
-        return $this->getBaseGraphUrl().$this->graphApiVersion.'/me?fields='.$fields
+        return $this->getBaseGraphUrl().$this->graphApiVersion.'/me?fields='.implode(',', $fields)
                         .'&access_token='.$token.'&appsecret_proof='.$appSecretProof;
     }
 
