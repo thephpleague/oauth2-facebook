@@ -93,6 +93,7 @@ class FacebookUser implements ResourceOwnerInterface
      * Returns the "about me" bio for the user as a string if present.
      *
      * @return string|null
+     * @deprecated The bio field was removed in Graph v2.8
      */
     public function getBio()
     {
