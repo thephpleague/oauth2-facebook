@@ -18,9 +18,9 @@ please send a patch via pull request.
 
 The following versions of PHP are supported.
 
-* PHP 5.5
 * PHP 5.6
 * PHP 7.0
+* PHP 7.1
 * HHVM
 
 ## Installation
@@ -30,7 +30,7 @@ Add the following to your `composer.json` file.
 ```json
 {
     "require": {
-        "league/oauth2-facebook": "~1.0"
+        "league/oauth2-facebook": "^2.0"
     }
 }
 ```

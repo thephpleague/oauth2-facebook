@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.0 - January 25, 2017
+
+- Added support for `oauth2-client` version 2.x.
+
 ## 1.4.4 - October 20, 2016
 
 - Deprecated the `bio` field and `getBio()` method on the User node since it was removed in Graph v2.8. (#27)
