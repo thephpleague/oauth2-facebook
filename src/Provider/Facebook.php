@@ -95,7 +95,7 @@ class Facebook extends AbstractProvider
 
     public function getDefaultScopes()
     {
-        return ['public_profile', 'email'];
+        return ['public_profile', 'email', 'user_friends'];
     }
 
     public function getResourceOwnerDetailsUrl(AccessToken $token)
