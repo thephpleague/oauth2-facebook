@@ -198,6 +198,16 @@ class FacebookUser implements ResourceOwnerInterface
     }
 
     /**
+     * Returns the user's birthday date as a string if available
+     *
+     * @return string|null
+     */
+    public function getBirthday()
+    {
+        return $this->getField('birthday');
+    }
+
+    /**
      * Returns all the data obtained about the user.
      *
      * @return array
