@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.4.5 - July 21, 2017
+
+- Fixed a bug when checking Graph versions past v2.9 (#40)
+
 ## 1.4.4 - October 20, 2016
 
 - Deprecated the `bio` field and `getBio()` method on the User node since it was removed in Graph v2.8. (#27)
