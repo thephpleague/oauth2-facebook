@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.1 - July 21, 2017
+
+- Fixed a bug when checking Graph versions past v2.9 (#40)
+
 ## 2.0.0 - January 25, 2017
 
 - Added support for `oauth2-client` version 2.x.
