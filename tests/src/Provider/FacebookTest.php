@@ -315,4 +315,15 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNotContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
     }
+
+    public function testGetResourceOwnerDetailsForApiVersion210OrHigher()
+    {
+        $provider = new Facebook([
+            'graphApiVersion' => 'v2.10',
+            'clientSecret' => 'foo_secret',
+        ]);
+        $fooToken = new AccessToken(['access_token' => 'foo_token']);
+
+        $this->assertNotContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+    }
 }
