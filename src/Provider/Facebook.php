@@ -43,7 +43,7 @@ class Facebook extends AbstractProvider
      * @const string
      */
     const GRAPH_API_VERSION_REGEX = '~^v\d+\.\d+$~';
-    
+
     /**
      * The Graph API version to use for requests.
      *
@@ -57,6 +57,15 @@ class Facebook extends AbstractProvider
      * @var boolean
      */
     private $enableBetaMode = false;
+
+    /**
+     * The display type to use the the authorization dialoge. By default (and not given) this is 'page'.
+     *
+     * Available options are: 'async', 'iframe', 'page', 'popup', 'touch' and 'wap'.
+     *
+     * @var string
+     */
+    private $displayType = 'page';
 
     /**
      * @param array $options
@@ -80,6 +89,15 @@ class Facebook extends AbstractProvider
 
         if (!empty($options['enableBetaTier']) && $options['enableBetaTier'] === true) {
             $this->enableBetaMode = true;
+        }
+
+        if (isset($options['display'])) {
+            if (!in_array($options['display'], ['async', 'iframe', 'page', 'popup', 'touch', 'wap'], true)) {
+                $message = 'The "display" must be one of the following values: async, iframe, page, popup, touch, wap.';
+                throw new \InvalidArgumentException($message);
+            }
+
+            $this->displayType = $options['display'];
         }
     }
 
@@ -195,5 +213,16 @@ class Facebook extends AbstractProvider
     private function getBaseGraphUrl()
     {
         return $this->enableBetaMode ? static::BASE_GRAPH_URL_BETA : static::BASE_GRAPH_URL;
+    }
+
+    protected function getAuthorizationParameters(array $options)
+    {
+        $parameters = parent::getAuthorizationParameters($options);
+
+        if ($this->displayType !== 'page') {
+            $parameters['display'] = $this->displayType;
+        }
+
+        return $parameters;
     }
 }

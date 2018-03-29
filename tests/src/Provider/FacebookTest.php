@@ -55,7 +55,70 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('scope', $query);
         $this->assertArrayHasKey('response_type', $query);
         $this->assertArrayHasKey('approval_prompt', $query);
+        $this->assertArrayNotHasKey('display', $query);
         $this->assertNotNull($this->provider->getState());
+    }
+
+    public function testAuthorizationUrlWithDisplay()
+    {
+        $provider = new Facebook([
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
+            'graphApiVersion' => static::GRAPH_API_VERSION,
+            'display' => 'iframe'
+        ]);
+
+        $url = $provider->getAuthorizationUrl();
+        $uri = parse_url($url);
+        parse_str($uri['query'], $query);
+
+        $this->assertArrayHasKey('client_id', $query);
+        $this->assertArrayHasKey('redirect_uri', $query);
+        $this->assertArrayHasKey('state', $query);
+        $this->assertArrayHasKey('scope', $query);
+        $this->assertArrayHasKey('response_type', $query);
+        $this->assertArrayHasKey('approval_prompt', $query);
+        $this->assertArrayHasKey('display', $query);
+        $this->assertNotNull($provider->getState());
+    }
+
+    public function testAuthorizationUrlWithDisplayDefault()
+    {
+        $provider = new Facebook([
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
+            'graphApiVersion' => static::GRAPH_API_VERSION,
+            'display' => 'page'
+        ]);
+
+        $url = $provider->getAuthorizationUrl();
+        $uri = parse_url($url);
+        parse_str($uri['query'], $query);
+
+        $this->assertArrayHasKey('client_id', $query);
+        $this->assertArrayHasKey('redirect_uri', $query);
+        $this->assertArrayHasKey('state', $query);
+        $this->assertArrayHasKey('scope', $query);
+        $this->assertArrayHasKey('response_type', $query);
+        $this->assertArrayHasKey('approval_prompt', $query);
+        $this->assertArrayNotHasKey('display', $query);
+        $this->assertNotNull($provider->getState());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testAuthorizationUrlWithDisplayBadType()
+    {
+        new Facebook([
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
+            'graphApiVersion' => static::GRAPH_API_VERSION,
+            'display' => 'foobar'
+        ]);
     }
 
     public function testGetBaseAccessTokenUrl()
