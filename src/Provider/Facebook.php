@@ -7,6 +7,9 @@ use League\OAuth2\Client\Provider\Exception\FacebookProviderException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @method FacebookUser getResourceOwner(AccessToken $token)
+ */
 class Facebook extends AbstractProvider
 {
     /**
