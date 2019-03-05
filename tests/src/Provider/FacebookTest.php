@@ -278,52 +278,52 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('&appsecret_proof=df4256903ba4e23636cc142117aa632133d75c642bd2a68955be1443bd14deb9', $provider->getResourceOwnerDetailsUrl($fooToken));
     }
 
-    public function testGetResourceOwnerDetailsForApiVersionLessThan28()
+    public function testGetResourceOwnerDetails()
     {
         $provider = new Facebook([
-            'graphApiVersion' => 'v2.7',
+            'graphApiVersion' => 'v3.0',
             'clientSecret' => 'foo_secret',
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        $defaultFields = [
+            'id',
+            'name',
+            'first_name',
+            'last_name',
+            'email',
+            'hometown',
+            'picture.type(large){url,is_silhouette}',
+            'cover{source}',
+            'gender',
+            'locale',
+            'link',
+            'timezone',
+            'age_range'
+        ];
+
+        $customFields = ['fooz', 'barz'];
+
+        foreach ($defaultFields as $field) {
+            $this->assertContains($field, $provider->getResourceOwnerDetailsUrl($fooToken));
+        }
+
+        foreach ($customFields as $field) {
+            $this->assertNotContains($field, $provider->getResourceOwnerDetailsUrl($fooToken));
+        }
 
         $provider = new Facebook([
-            'graphApiVersion' => 'v2.6',
+            'graphApiVersion' => 'v3.0',
             'clientSecret' => 'foo_secret',
+            'fields' => $customFields,
         ]);
-        $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
-    }
+        foreach ($defaultFields as $field) {
+            $this->assertContains($field, $provider->getResourceOwnerDetailsUrl($fooToken));
+        }
 
-    public function testGetResourceOwnerDetailsForApiVersion28OrHigher()
-    {
-        $provider = new Facebook([
-            'graphApiVersion' => 'v2.8',
-            'clientSecret' => 'foo_secret',
-        ]);
-        $fooToken = new AccessToken(['access_token' => 'foo_token']);
-
-        $this->assertNotContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
-
-        $provider = new Facebook([
-            'graphApiVersion' => 'v2.9',
-            'clientSecret' => 'foo_secret',
-        ]);
-        $fooToken = new AccessToken(['access_token' => 'foo_token']);
-
-        $this->assertNotContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
-    }
-
-    public function testGetResourceOwnerDetailsForApiVersion210OrHigher()
-    {
-        $provider = new Facebook([
-            'graphApiVersion' => 'v2.10',
-            'clientSecret' => 'foo_secret',
-        ]);
-        $fooToken = new AccessToken(['access_token' => 'foo_token']);
-
-        $this->assertNotContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        foreach ($customFields as $field) {
+            $this->assertContains($field, $provider->getResourceOwnerDetailsUrl($fooToken));
+        }
     }
 }

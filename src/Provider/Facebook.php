@@ -43,7 +43,35 @@ class Facebook extends AbstractProvider
      * @const string
      */
     const GRAPH_API_VERSION_REGEX = '~^v\d+\.\d+$~';
-    
+
+    /**
+     * The fields to ask for
+     *
+     * @var string[]
+     */
+    protected $fields = [];
+
+    /**
+     * Default fields to ask for
+     *
+     * @var string[]
+     */
+    protected $defaultFields = [
+        'id',
+        'name',
+        'first_name',
+        'last_name',
+        'email',
+        'hometown',
+        'picture.type(large){url,is_silhouette}',
+        'cover{source}',
+        'gender',
+        'locale',
+        'link',
+        'timezone',
+        'age_range'
+    ];
+
     /**
      * The Graph API version to use for requests.
      *
@@ -67,6 +95,12 @@ class Facebook extends AbstractProvider
     public function __construct($options = [], array $collaborators = [])
     {
         parent::__construct($options, $collaborators);
+
+        if (isset($options['fields']) && is_array($options['fields'])) {
+            $this->fields = array_merge($this->defaultFields, $options['fields']);
+        } else {
+            $this->fields = $this->defaultFields;
+        }
 
         if (empty($options['graphApiVersion'])) {
             $message = 'The "graphApiVersion" option not set. Please set a default Graph API version.';
@@ -100,20 +134,9 @@ class Facebook extends AbstractProvider
 
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        $fields = [
-            'id', 'name', 'first_name', 'last_name',
-            'email', 'hometown', 'picture.type(large){url,is_silhouette}',
-            'cover{source}', 'gender', 'locale', 'link', 'timezone', 'age_range'
-        ];
-
-        // backwards compatibility less than 2.8
-        if (version_compare(substr($this->graphApiVersion, 1), '2.8') < 0) {
-            $fields[] = 'bio';
-        }
-
         $appSecretProof = AppSecretProof::create($this->clientSecret, $token->getToken());
 
-        return $this->getBaseGraphUrl().$this->graphApiVersion.'/me?fields='.implode(',', $fields)
+        return $this->getBaseGraphUrl().$this->graphApiVersion.'/me?fields='.implode(',', $this->fields)
                         .'&access_token='.$token.'&appsecret_proof='.$appSecretProof;
     }
 
