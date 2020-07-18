@@ -101,9 +101,7 @@ class Facebook extends AbstractProvider
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
         $fields = [
-            'id', 'name', 'first_name', 'last_name',
-            'email', 'hometown', 'picture.type(large){url,is_silhouette}',
-            'cover{source}', 'gender', 'locale', 'link', 'timezone', 'age_range'
+            'id', 'name', 'first_name', 'last_name', 'email'
         ];
 
         // backwards compatibility less than 2.8
