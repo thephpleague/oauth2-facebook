@@ -38,7 +38,6 @@ class FacebookUserTest extends \PHPUnit_Framework_TestCase
     public function testProperlyMutatesPhotoUrls()
     {
         $this->assertEquals('foo.com/pic.jpg', $this->user->getPictureUrl());
-        $this->assertEquals('foo.com/cover.jpg', $this->user->getCoverPhotoUrl());
     }
 
     public function testCanGetAllDataBackAsAnArray()
