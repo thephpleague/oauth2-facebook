@@ -3,8 +3,9 @@
 namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Provider\FacebookUser;
+use PHPUnit\Framework\TestCase;
 
-class FacebookUserTest extends \PHPUnit_Framework_TestCase
+class FacebookUserTest extends TestCase
 {
     /**
      * @var FacebookUser
