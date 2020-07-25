@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 2.0.2 - July 20, 2020
+## 2.0.2 - July 25, 2020
 
 - Removed deprecated default scopes
 - Added support for PHP 7.2, 7.3, 7.4
