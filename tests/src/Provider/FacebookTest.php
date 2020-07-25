@@ -6,21 +6,22 @@ use Mockery as m;
 use League\OAuth2\Client\Provider\Facebook;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use PHPUnit\Framework\TestCase;
 
 class FooFacebookProvider extends Facebook
 {
     protected function fetchResourceOwnerDetails(AccessToken $token)
     {
-        return json_decode('{"id": 12345, "name": "mock_name", "username": "mock_username", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "Location": "mock_home", "bio": "mock_description", "link": "mock_facebook_url"}', true);
+        return json_decode('{"id": 12345, "name": "mock_name", "username": "mock_username", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "Location": "mock_home", "link": "mock_facebook_url"}', true);
     }
 }
 
-class FacebookTest extends \PHPUnit_Framework_TestCase
+class FacebookTest extends TestCase
 {
     /**
      * @const string The version of the Graph API we want to use for tests.
      */
-    const GRAPH_API_VERSION = 'v2.3';
+    const GRAPH_API_VERSION = 'v7.0';
 
     /**
      * @var Facebook
@@ -101,7 +102,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     public function testGraphApiVersionWillCheckFormat()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $graphVersion = '2.4';
         $provider = new Facebook([
             'graphApiVersion' => $graphVersion,
@@ -147,7 +148,10 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertLessThanOrEqual(time() + 3600, $token->getExpires());
         $this->assertGreaterThanOrEqual(time(), $token->getExpires());
         $this->assertNull($token->getRefreshToken(), 'Facebook does not support refresh tokens. Expected null.');
-        $this->assertNull($token->getResourceOwnerId(), 'Facebook does not return user ID with access token. Expected null.');
+        $this->assertNull(
+            $token->getResourceOwnerId(),
+            'Facebook does not return user ID with access token. Expected null.'
+        );
     }
 
     public function testCanGetALongLivedAccessTokenFromShortLivedOne()
@@ -191,11 +195,11 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $token = m::mock('League\OAuth2\Client\Token\AccessToken');
         $user = $provider->getResourceOwner($token);
 
-        $this->assertEquals(12345, $user->getId($token));
-        $this->assertEquals('mock_name', $user->getName($token));
-        $this->assertEquals('mock_first_name', $user->getFirstName($token));
-        $this->assertEquals('mock_last_name', $user->getLastName($token));
-        $this->assertEquals('mock_email', $user->getEmail($token));
+        $this->assertEquals(12345, $user->getId());
+        $this->assertEquals('mock_name', $user->getName());
+        $this->assertEquals('mock_first_name', $user->getFirstName());
+        $this->assertEquals('mock_last_name', $user->getLastName());
+        $this->assertEquals('mock_email', $user->getEmail());
     }
 
     /**
@@ -275,7 +279,10 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertContains('&appsecret_proof=df4256903ba4e23636cc142117aa632133d75c642bd2a68955be1443bd14deb9', $provider->getResourceOwnerDetailsUrl($fooToken));
+        $this->assertContains(
+            '&appsecret_proof=df4256903ba4e23636cc142117aa632133d75c642bd2a68955be1443bd14deb9',
+            $provider->getResourceOwnerDetailsUrl($fooToken)
+        );
     }
 
     public function testGetResourceOwnerDetailsForApiVersionLessThan28()
