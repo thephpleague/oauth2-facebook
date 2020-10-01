@@ -106,7 +106,7 @@ class Facebook extends AbstractProvider
         $fields = [
             'id', 'name', 'first_name', 'last_name',
             'email', 'hometown', 'picture.type(large){url,is_silhouette}',
-            'gender', 'link', 'age_range'
+            'gender', 'age_range'
         ];
 
         // backwards compatibility less than 2.8
