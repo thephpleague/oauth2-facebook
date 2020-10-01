@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.3 - October 1, 2020
+
+- Removed "link" scope, #60 by @mikealmond
+
 ## 2.0.2 - July 25, 2020
 
 - Removed deprecated default scopes
