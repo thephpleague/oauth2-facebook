@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.4 - January 31, 2021
+
+- Added support for PHP 8, #63 by @lbacik
+
 ## 2.0.3 - October 1, 2020
 
 - Removed "link" scope, #60 by @mikealmond
