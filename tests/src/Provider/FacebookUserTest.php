@@ -12,7 +12,7 @@ class FacebookUserTest extends TestCase
      */
     protected $user;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->user = new FacebookUser([
             'id' => '4',

@@ -2,10 +2,12 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use InvalidArgumentException;
 use Mockery as m;
 use League\OAuth2\Client\Provider\Facebook;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Provider\Exception\FacebookProviderException;
 use PHPUnit\Framework\TestCase;
 
 class FooFacebookProvider extends Facebook
@@ -28,7 +30,7 @@ class FacebookTest extends TestCase
      */
     protected $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new Facebook([
             'clientId' => 'mock_client_id',
@@ -38,7 +40,7 @@ class FacebookTest extends TestCase
         ]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         m::close();
         parent::tearDown();
@@ -102,7 +104,7 @@ class FacebookTest extends TestCase
 
     public function testGraphApiVersionWillCheckFormat()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $graphVersion = '2.4';
         $provider = new Facebook([
             'graphApiVersion' => $graphVersion,
@@ -173,11 +175,10 @@ class FacebookTest extends TestCase
         $this->assertEquals('long-lived-token', $token->getToken());
     }
 
-    /**
-     * @expectedException \League\OAuth2\Client\Provider\Exception\FacebookProviderException
-     */
     public function testTryingToRefreshAnAccessTokenWillThrow()
     {
+        $this->expectException(FacebookProviderException::class);
+
         $this->provider->getAccessToken('foo', ['refresh_token' => 'foo_token']);
     }
 
@@ -202,11 +203,10 @@ class FacebookTest extends TestCase
         $this->assertEquals('mock_email', $user->getEmail());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testNotSettingADefaultGraphApiVersionWillThrow()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         new Facebook([
           'clientId' => 'mock_client_id',
           'clientSecret' => 'mock_secret',
@@ -279,7 +279,7 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             '&appsecret_proof=df4256903ba4e23636cc142117aa632133d75c642bd2a68955be1443bd14deb9',
             $provider->getResourceOwnerDetailsUrl($fooToken)
         );
@@ -293,7 +293,7 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        $this->assertStringContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
 
         $provider = new Facebook([
             'graphApiVersion' => 'v2.6',
@@ -301,7 +301,7 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        $this->assertStringContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
     }
 
     public function testGetResourceOwnerDetailsForApiVersion28OrHigher()
@@ -312,7 +312,7 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertNotContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        $this->assertStringNotContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
 
         $provider = new Facebook([
             'graphApiVersion' => 'v2.9',
@@ -320,7 +320,7 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertNotContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        $this->assertStringNotContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
     }
 
     public function testGetResourceOwnerDetailsForApiVersion210OrHigher()
@@ -331,6 +331,6 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertNotContains('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        $this->assertStringNotContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
     }
 }
