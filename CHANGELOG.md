@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.5 - Febuary 1, 2021
+
+- Tagged the correct commit for PHP 8 support
+
 ## 2.0.4 - January 31, 2021
 
 - Added support for PHP 8, #63 by @lbacik
