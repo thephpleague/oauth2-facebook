@@ -34,7 +34,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->getField('id');
     }
@@ -44,7 +44,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->getField('name');
     }
@@ -54,7 +54,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getFirstName()
+    public function getFirstName(): ?string
     {
         return $this->getField('first_name');
     }
@@ -64,7 +64,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getLastName()
+    public function getLastName(): ?string
     {
         return $this->getField('last_name');
     }
@@ -74,7 +74,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->getField('email');
     }
@@ -84,7 +84,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return array|null
      */
-    public function getHometown()
+    public function getHometown(): ?array
     {
         return $this->getField('hometown');
     }
@@ -95,7 +95,7 @@ class FacebookUser implements ResourceOwnerInterface
      * @return string|null
      * @deprecated The bio field was removed in Graph v2.8
      */
-    public function getBio()
+    public function getBio(): ?string
     {
         return $this->getField('bio');
     }
@@ -106,7 +106,7 @@ class FacebookUser implements ResourceOwnerInterface
      * @return boolean
      */
 
-    public function isDefaultPicture()
+    public function isDefaultPicture(): bool
     {
         return $this->getField('is_silhouette');
     }
@@ -116,7 +116,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getPictureUrl()
+    public function getPictureUrl(): ?string
     {
         return $this->getField('picture_url');
     }
@@ -127,7 +127,7 @@ class FacebookUser implements ResourceOwnerInterface
      * @return string|null
      * @deprecated
      */
-    public function getCoverPhotoUrl()
+    public function getCoverPhotoUrl(): ?string
     {
         return $this->getField('cover_photo_url');
     }
@@ -137,7 +137,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getGender()
+    public function getGender(): ?string
     {
         return $this->getField('gender');
     }
@@ -148,7 +148,7 @@ class FacebookUser implements ResourceOwnerInterface
      * @return string|null
      * @deprecated
      */
-    public function getLocale()
+    public function getLocale(): ?string
     {
         return $this->getField('locale');
     }
@@ -158,7 +158,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getLink()
+    public function getLink(): ?string
     {
         return $this->getField('link');
     }
@@ -169,7 +169,7 @@ class FacebookUser implements ResourceOwnerInterface
      * @return float|null
      * @deprecated
      */
-    public function getTimezone()
+    public function getTimezone(): ?float
     {
         return $this->getField('timezone');
     }
@@ -179,12 +179,9 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return integer|null
      */
-    public function getMinAge()
+    public function getMinAge(): ?int
     {
-        if (isset($this->data['age_range']['min'])) {
-            return $this->data['age_range']['min'];
-        }
-        return null;
+        return $this->data['age_range']['min'] ?? null;
     }
 
     /**
@@ -192,12 +189,9 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return integer|null
      */
-    public function getMaxAge()
+    public function getMaxAge(): ?int
     {
-        if (isset($this->data['age_range']['max'])) {
-            return $this->data['age_range']['max'];
-        }
-        return null;
+        return $this->data['age_range']['max'] ?? null;
     }
 
     /**
@@ -205,7 +199,7 @@ class FacebookUser implements ResourceOwnerInterface
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->data;
     }
@@ -213,12 +207,10 @@ class FacebookUser implements ResourceOwnerInterface
     /**
      * Returns a field from the Graph node data.
      *
-     * @param string $key
-     *
      * @return mixed|null
      */
-    private function getField($key)
+    private function getField(string $key)
     {
-        return isset($this->data[$key]) ? $this->data[$key] : null;
+        return $this->data[$key] ?? null;
     }
 }

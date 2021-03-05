@@ -20,4 +20,4 @@ jobs:
               run: composer install
 
             - name: Run script
-              run: ./vendor/bin/phpcs src --standard=psr2 -sp
+              run: ./vendor/bin/phpcs src --standard=psr12 -sp

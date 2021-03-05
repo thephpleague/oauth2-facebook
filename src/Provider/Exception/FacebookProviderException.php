@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Provider\Exception;
 
-class FacebookProviderException extends \Exception
+use Exception;
+
+class FacebookProviderException extends Exception
 {
 }

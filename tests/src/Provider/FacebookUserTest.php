@@ -24,24 +24,24 @@ class FacebookUserTest extends TestCase
         ]);
     }
 
-    public function testMinAndMaxAgeReturnAgeOrNull()
+    public function testMinAndMaxAgeReturnAgeOrNull(): void
     {
-        $this->assertEquals(21, $this->user->getMinAge());
-        $this->assertNull($this->user->getMaxAge());
+        self::assertEquals(21, $this->user->getMinAge());
+        self::assertNull($this->user->getMaxAge());
     }
 
-    public function testGettersReturnNullWhenNoKeyExists()
+    public function testGettersReturnNullWhenNoKeyExists(): void
     {
-        $this->assertEquals('4', $this->user->getId());
-        $this->assertNull($this->user->getGender());
+        self::assertEquals('4', $this->user->getId());
+        self::assertNull($this->user->getGender());
     }
 
-    public function testProperlyMutatesPhotoUrls()
+    public function testProperlyMutatesPhotoUrls(): void
     {
-        $this->assertEquals('foo.com/pic.jpg', $this->user->getPictureUrl());
+        self::assertEquals('foo.com/pic.jpg', $this->user->getPictureUrl());
     }
 
-    public function testCanGetAllDataBackAsAnArray()
+    public function testCanGetAllDataBackAsAnArray(): void
     {
         $data = $this->user->toArray();
 
@@ -56,6 +56,6 @@ class FacebookUserTest extends TestCase
           'age_range' => ['min' => 21],
         ];
 
-        $this->assertEquals($expectedData, $data);
+        self::assertEquals($expectedData, $data);
     }
 }

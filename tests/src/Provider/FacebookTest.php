@@ -23,7 +23,7 @@ class FacebookTest extends TestCase
     /**
      * @const string The version of the Graph API we want to use for tests.
      */
-    const GRAPH_API_VERSION = 'v7.0';
+    protected const GRAPH_API_VERSION = 'v7.0';
 
     /**
      * @var Facebook
@@ -46,31 +46,31 @@ class FacebookTest extends TestCase
         parent::tearDown();
     }
 
-    public function testAuthorizationUrl()
+    public function testAuthorizationUrl(): void
     {
         $url = $this->provider->getAuthorizationUrl();
         $uri = parse_url($url);
         parse_str($uri['query'], $query);
 
-        $this->assertArrayHasKey('client_id', $query);
-        $this->assertArrayHasKey('redirect_uri', $query);
-        $this->assertArrayHasKey('state', $query);
-        $this->assertArrayHasKey('scope', $query);
-        $this->assertArrayHasKey('response_type', $query);
-        $this->assertArrayHasKey('approval_prompt', $query);
-        $this->assertNotNull($this->provider->getState());
+        self::assertArrayHasKey('client_id', $query);
+        self::assertArrayHasKey('redirect_uri', $query);
+        self::assertArrayHasKey('state', $query);
+        self::assertArrayHasKey('scope', $query);
+        self::assertArrayHasKey('response_type', $query);
+        self::assertArrayHasKey('approval_prompt', $query);
+        self::assertNotNull($this->provider->getState());
     }
 
-    public function testGetBaseAccessTokenUrl()
+    public function testGetBaseAccessTokenUrl(): void
     {
         $url = $this->provider->getBaseAccessTokenUrl([]);
         $uri = parse_url($url);
         $graphVersion = static::GRAPH_API_VERSION;
 
-        $this->assertEquals('/'.$graphVersion.'/oauth/access_token', $uri['path']);
+        self::assertEquals('/'.$graphVersion.'/oauth/access_token', $uri['path']);
     }
 
-    public function testGraphApiVersionCanBeCustomized()
+    public function testGraphApiVersionCanBeCustomized(): void
     {
         $graphVersion = 'v13.37';
         $provider = new Facebook([
@@ -83,12 +83,12 @@ class FacebookTest extends TestCase
         $urlAccessToken = $provider->getBaseAccessTokenUrl([]);
         $urlUserDetails = parse_url($provider->getResourceOwnerDetailsUrl($fooToken), PHP_URL_PATH);
 
-        $this->assertEquals('https://www.facebook.com/'.$graphVersion.'/dialog/oauth', $urlAuthorize);
-        $this->assertEquals('https://graph.facebook.com/'.$graphVersion.'/oauth/access_token', $urlAccessToken);
-        $this->assertEquals('/'.$graphVersion.'/me', $urlUserDetails);
+        self::assertEquals('https://www.facebook.com/'.$graphVersion.'/dialog/oauth', $urlAuthorize);
+        self::assertEquals('https://graph.facebook.com/'.$graphVersion.'/oauth/access_token', $urlAccessToken);
+        self::assertEquals('/'.$graphVersion.'/me', $urlUserDetails);
     }
 
-    public function testGraphApiVersionWillFallbackToDefault()
+    public function testGraphApiVersionWillFallbackToDefault(): void
     {
         $graphVersion = static::GRAPH_API_VERSION;
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
@@ -97,12 +97,12 @@ class FacebookTest extends TestCase
         $urlAccessToken = $this->provider->getBaseAccessTokenUrl([]);
         $urlUserDetails = parse_url($this->provider->getResourceOwnerDetailsUrl($fooToken), PHP_URL_PATH);
 
-        $this->assertEquals('https://www.facebook.com/'.$graphVersion.'/dialog/oauth', $urlAuthorize);
-        $this->assertEquals('https://graph.facebook.com/'.$graphVersion.'/oauth/access_token', $urlAccessToken);
-        $this->assertEquals('/'.$graphVersion.'/me', $urlUserDetails);
+        self::assertEquals('https://www.facebook.com/'.$graphVersion.'/dialog/oauth', $urlAuthorize);
+        self::assertEquals('https://graph.facebook.com/'.$graphVersion.'/oauth/access_token', $urlAccessToken);
+        self::assertEquals('/'.$graphVersion.'/me', $urlUserDetails);
     }
 
-    public function testGraphApiVersionWillCheckFormat()
+    public function testGraphApiVersionWillCheckFormat(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $graphVersion = '2.4';
@@ -112,7 +112,7 @@ class FacebookTest extends TestCase
         ]);
     }
 
-    public function testTheBetaTierCanBeEnabled()
+    public function testTheBetaTierCanBeEnabled(): void
     {
         $provider = new Facebook([
             'graphApiVersion' => 'v0.0',
@@ -125,12 +125,12 @@ class FacebookTest extends TestCase
         $urlAccessToken = parse_url($provider->getBaseAccessTokenUrl([]), PHP_URL_HOST);
         $urlUserDetails = parse_url($provider->getResourceOwnerDetailsUrl($fooToken), PHP_URL_HOST);
 
-        $this->assertEquals('www.beta.facebook.com', $urlAuthorize);
-        $this->assertEquals('graph.beta.facebook.com', $urlAccessToken);
-        $this->assertEquals('graph.beta.facebook.com', $urlUserDetails);
+        self::assertEquals('www.beta.facebook.com', $urlAuthorize);
+        self::assertEquals('graph.beta.facebook.com', $urlAccessToken);
+        self::assertEquals('graph.beta.facebook.com', $urlUserDetails);
     }
 
-    public function testGetAccessToken()
+    public function testGetAccessToken(): void
     {
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getHeader')
@@ -146,17 +146,17 @@ class FacebookTest extends TestCase
 
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
-        $this->assertEquals('mock_access_token', $token->getToken());
-        $this->assertLessThanOrEqual(time() + 3600, $token->getExpires());
-        $this->assertGreaterThanOrEqual(time(), $token->getExpires());
-        $this->assertNull($token->getRefreshToken(), 'Facebook does not support refresh tokens. Expected null.');
-        $this->assertNull(
+        self::assertEquals('mock_access_token', $token->getToken());
+        self::assertLessThanOrEqual(time() + 3600, $token->getExpires());
+        self::assertGreaterThanOrEqual(time(), $token->getExpires());
+        self::assertNull($token->getRefreshToken(), 'Facebook does not support refresh tokens. Expected null.');
+        self::assertNull(
             $token->getResourceOwnerId(),
             'Facebook does not return user ID with access token. Expected null.'
         );
     }
 
-    public function testCanGetALongLivedAccessTokenFromShortLivedOne()
+    public function testCanGetALongLivedAccessTokenFromShortLivedOne(): void
     {
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getHeader')
@@ -172,22 +172,22 @@ class FacebookTest extends TestCase
 
         $token = $this->provider->getLongLivedAccessToken('short-lived-token');
 
-        $this->assertEquals('long-lived-token', $token->getToken());
+        self::assertEquals('long-lived-token', $token->getToken());
     }
 
-    public function testTryingToRefreshAnAccessTokenWillThrow()
+    public function testTryingToRefreshAnAccessTokenWillThrow(): void
     {
         $this->expectException(FacebookProviderException::class);
 
         $this->provider->getAccessToken('foo', ['refresh_token' => 'foo_token']);
     }
 
-    public function testScopes()
+    public function testScopes(): void
     {
-        $this->assertEquals(['public_profile', 'email'], $this->provider->getDefaultScopes());
+        self::assertEquals(['public_profile', 'email'], $this->provider->getDefaultScopes());
     }
 
-    public function testUserData()
+    public function testUserData(): void
     {
         $provider = new FooFacebookProvider([
           'graphApiVersion' => static::GRAPH_API_VERSION,
@@ -196,14 +196,14 @@ class FacebookTest extends TestCase
         $token = m::mock('League\OAuth2\Client\Token\AccessToken');
         $user = $provider->getResourceOwner($token);
 
-        $this->assertEquals(12345, $user->getId());
-        $this->assertEquals('mock_name', $user->getName());
-        $this->assertEquals('mock_first_name', $user->getFirstName());
-        $this->assertEquals('mock_last_name', $user->getLastName());
-        $this->assertEquals('mock_email', $user->getEmail());
+        self::assertEquals(12345, $user->getId());
+        self::assertEquals('mock_name', $user->getName());
+        self::assertEquals('mock_first_name', $user->getFirstName());
+        self::assertEquals('mock_last_name', $user->getLastName());
+        self::assertEquals('mock_email', $user->getEmail());
     }
 
-    public function testNotSettingADefaultGraphApiVersionWillThrow()
+    public function testNotSettingADefaultGraphApiVersionWillThrow(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -214,7 +214,7 @@ class FacebookTest extends TestCase
         ]);
     }
 
-    public function testOldVersionsOfGraphWillParseStringResponse()
+    public function testOldVersionsOfGraphWillParseStringResponse(): void
     {
         $provider = new Facebook([
           'clientId' => 'mock_client_id',
@@ -237,13 +237,13 @@ class FacebookTest extends TestCase
 
         $token = $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
-        $this->assertEquals('mock_access_token', $token->getToken());
-        $this->assertLessThanOrEqual(time() + 3600, $token->getExpires());
-        $this->assertGreaterThanOrEqual(time(), $token->getExpires());
-        $this->assertEquals('mock_refresh_token', $token->getRefreshToken());
+        self::assertEquals('mock_access_token', $token->getToken());
+        self::assertLessThanOrEqual(time() + 3600, $token->getExpires());
+        self::assertGreaterThanOrEqual(time(), $token->getExpires());
+        self::assertEquals('mock_refresh_token', $token->getRefreshToken());
     }
 
-    public function testProperlyHandlesErrorResponses()
+    public function testProperlyHandlesErrorResponses(): void
     {
         $postResponse = m::mock('Psr\Http\Message\ResponseInterface');
         $postResponse->shouldReceive('getHeader')
@@ -267,11 +267,11 @@ class FacebookTest extends TestCase
             $errorCode = $e->getCode();
         }
 
-        $this->assertEquals('OAuthException: Foo auth error', $errorMessage);
-        $this->assertEquals(191, $errorCode);
+        self::assertEquals('OAuthException: Foo auth error', $errorMessage);
+        self::assertEquals(191, $errorCode);
     }
 
-    public function testAnAppSecretProofWillBeAppendedToRequestUrl()
+    public function testAnAppSecretProofWillBeAppendedToRequestUrl(): void
     {
         $provider = new Facebook([
             'graphApiVersion' => 'v0.0',
@@ -279,13 +279,13 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertStringContainsString(
+        self::assertStringContainsString(
             '&appsecret_proof=df4256903ba4e23636cc142117aa632133d75c642bd2a68955be1443bd14deb9',
             $provider->getResourceOwnerDetailsUrl($fooToken)
         );
     }
 
-    public function testGetResourceOwnerDetailsForApiVersionLessThan28()
+    public function testGetResourceOwnerDetailsForApiVersionLessThan28(): void
     {
         $provider = new Facebook([
             'graphApiVersion' => 'v2.7',
@@ -293,7 +293,7 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertStringContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        self::assertStringContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
 
         $provider = new Facebook([
             'graphApiVersion' => 'v2.6',
@@ -301,10 +301,10 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertStringContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        self::assertStringContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
     }
 
-    public function testGetResourceOwnerDetailsForApiVersion28OrHigher()
+    public function testGetResourceOwnerDetailsForApiVersion28OrHigher(): void
     {
         $provider = new Facebook([
             'graphApiVersion' => 'v2.8',
@@ -312,7 +312,7 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertStringNotContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        self::assertStringNotContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
 
         $provider = new Facebook([
             'graphApiVersion' => 'v2.9',
@@ -320,10 +320,10 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertStringNotContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        self::assertStringNotContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
     }
 
-    public function testGetResourceOwnerDetailsForApiVersion210OrHigher()
+    public function testGetResourceOwnerDetailsForApiVersion210OrHigher(): void
     {
         $provider = new Facebook([
             'graphApiVersion' => 'v2.10',
@@ -331,6 +331,6 @@ class FacebookTest extends TestCase
         ]);
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
 
-        $this->assertStringNotContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
+        self::assertStringNotContainsString('bio', $provider->getResourceOwnerDetailsUrl($fooToken));
     }
 }

@@ -12,7 +12,7 @@ class AppSecretProof
      * @param string $accessToken
      * @return string
      */
-    public static function create($appSecret, $accessToken)
+    public static function create(string $appSecret, string $accessToken): string
     {
         return hash_hmac('sha256', $accessToken, $appSecret);
     }
