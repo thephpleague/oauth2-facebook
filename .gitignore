@@ -2,5 +2,5 @@
 composer.phar
 composer.lock
 .DS_Store
-clover.xml
+coverage.xml
 .phpunit.result.cache
