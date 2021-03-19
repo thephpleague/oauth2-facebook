@@ -15,6 +15,11 @@ jobs:
                     - '7.3'
                     - '7.4'
                     - '8.0'
+                coverage: ['none']
+                include:
+                    - description: 'Log Code Coverage'
+                      php: '8.0'
+                      coverage: 'xdebug'
 
         name: PHP ${{ matrix.php }} ${{ matrix.description }}
         steps:
@@ -30,9 +35,22 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
+                  coverage: ${{ matrix.coverage }}
 
             - name: Install dependencies
               run: composer install
 
             - name: Run PHPUnit tests
               run: vendor/bin/phpunit
+              if: matrix.coverage == 'none'
+
+            - name: PHPUnit tests and Log Code coverage
+              run: vendor/bin/phpunit --exclude-group proxy --coverage-clover=coverage.xml
+              if: matrix.coverage == 'xdebug'
+
+            - name: Run codecov
+              uses: codecov/codecov-action@v1
+              if: matrix.coverage == 'xdebug'
+              with:
+                  file: './coverage.xml'
+                  fail_ci_if_error: true
