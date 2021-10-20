@@ -104,17 +104,23 @@ class Facebook extends AbstractProvider
         return ['public_profile', 'email'];
     }
 
-    public function getResourceOwnerDetailsUrl(AccessToken $token): string
+    public function getResourceOwnerDetailsUrl(AccessToken $token, array $fields = null): string
     {
-        $fields = [
-            'id', 'name', 'first_name', 'last_name',
-            'email', 'hometown', 'picture.type(large){url,is_silhouette}',
-            'gender', 'age_range'
-        ];
+        if ($fields === null) {
+            $fields = [
+                'id', 'name', 'first_name', 'last_name',
+                'email', 'hometown', 'picture.type(large){url,is_silhouette}',
+                'gender', 'age_range'
+            ];
 
-        // backwards compatibility less than 2.8
-        if (version_compare(substr($this->graphApiVersion, 1), '2.8') < 0) {
-            $fields[] = 'bio';
+            // backwards compatibility less than 2.8
+            if (version_compare(substr($this->graphApiVersion, 1), '2.8') < 0) {
+                $fields[] = 'bio';
+            }
+        } else {
+            array_walk($fields, static function ($value) { if (!is_string($value)) {
+                throw new FacebookProviderException('Facebook does not support non-string fields');
+            }});
         }
 
         $appSecretProof = AppSecretProof::create($this->clientSecret, $token->getToken());

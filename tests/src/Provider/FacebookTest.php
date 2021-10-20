@@ -88,6 +88,34 @@ class FacebookTest extends TestCase
         self::assertEquals('/'.$graphVersion.'/me', $urlUserDetails);
     }
 
+    public function testResourceOwnerDetailsUrlHasDefaultFields(): void
+    {
+        $fooToken = new AccessToken(['access_token' => 'foo_token']);
+
+        $fields = [
+            'id', 'name', 'first_name', 'last_name',
+            'email', 'hometown', 'picture.type(large){url,is_silhouette}',
+            'gender', 'age_range'
+        ];
+        $urlUserDetails = parse_url($this->provider->getResourceOwnerDetailsUrl($fooToken), PHP_URL_QUERY);
+        $urlParts = explode('&', $urlUserDetails);
+        $urlFieldsPart = $urlParts[0];
+
+        self::assertEquals('fields=' . implode(',', $fields), $urlFieldsPart);
+    }
+
+    public function testResourceOwnerDetailsUrlCanBeCustomized(): void
+    {
+        $fooToken = new AccessToken(['access_token' => 'foo_token']);
+
+        $fields = ['id', 'name', 'first_name', 'last_name', 'email'];
+        $urlUserDetails = parse_url($this->provider->getResourceOwnerDetailsUrl($fooToken, $fields), PHP_URL_QUERY);
+        $urlParts = explode('&', $urlUserDetails);
+        $urlFieldsPart = $urlParts[0];
+
+        self::assertEquals('fields=' . implode(',', $fields), $urlFieldsPart);
+    }
+
     public function testGraphApiVersionWillFallbackToDefault(): void
     {
         $graphVersion = static::GRAPH_API_VERSION;
