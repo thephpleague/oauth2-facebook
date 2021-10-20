@@ -104,12 +104,18 @@ class FacebookTest extends TestCase
         self::assertEquals('fields=' . implode(',', $fields), $urlFieldsPart);
     }
 
-    public function testResourceOwnerDetailsUrlCanBeCustomized(): void
+    public function testResourceOwnerDetailsUrlCanUseCustomizedFields(): void
     {
+        $graphVersion = static::GRAPH_API_VERSION;
         $fooToken = new AccessToken(['access_token' => 'foo_token']);
-
         $fields = ['id', 'name', 'first_name', 'last_name', 'email'];
-        $urlUserDetails = parse_url($this->provider->getResourceOwnerDetailsUrl($fooToken, $fields), PHP_URL_QUERY);
+        $provider = new Facebook([
+            'graphApiVersion' => $graphVersion,
+            'clientSecret' => 'mock_secret',
+            'fields' => $fields
+        ]);
+
+        $urlUserDetails = parse_url($provider->getResourceOwnerDetailsUrl($fooToken), PHP_URL_QUERY);
         $urlParts = explode('&', $urlUserDetails);
         $urlFieldsPart = $urlParts[0];
 
