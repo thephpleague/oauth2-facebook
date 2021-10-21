@@ -88,6 +88,40 @@ class FacebookTest extends TestCase
         self::assertEquals('/'.$graphVersion.'/me', $urlUserDetails);
     }
 
+    public function testResourceOwnerDetailsUrlHasDefaultFields(): void
+    {
+        $fooToken = new AccessToken(['access_token' => 'foo_token']);
+
+        $fields = [
+            'id', 'name', 'first_name', 'last_name',
+            'email', 'hometown', 'picture.type(large){url,is_silhouette}',
+            'gender', 'age_range'
+        ];
+        $urlUserDetails = parse_url($this->provider->getResourceOwnerDetailsUrl($fooToken), PHP_URL_QUERY);
+        $urlParts = explode('&', $urlUserDetails);
+        $urlFieldsPart = $urlParts[0];
+
+        self::assertEquals('fields=' . implode(',', $fields), $urlFieldsPart);
+    }
+
+    public function testResourceOwnerDetailsUrlCanUseCustomizedFields(): void
+    {
+        $graphVersion = static::GRAPH_API_VERSION;
+        $fooToken = new AccessToken(['access_token' => 'foo_token']);
+        $fields = ['id', 'name', 'first_name', 'last_name', 'email'];
+        $provider = new Facebook([
+            'graphApiVersion' => $graphVersion,
+            'clientSecret' => 'mock_secret',
+            'fields' => $fields
+        ]);
+
+        $urlUserDetails = parse_url($provider->getResourceOwnerDetailsUrl($fooToken), PHP_URL_QUERY);
+        $urlParts = explode('&', $urlUserDetails);
+        $urlFieldsPart = $urlParts[0];
+
+        self::assertEquals('fields=' . implode(',', $fields), $urlFieldsPart);
+    }
+
     public function testGraphApiVersionWillFallbackToDefault(): void
     {
         $graphVersion = static::GRAPH_API_VERSION;

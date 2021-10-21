@@ -63,6 +63,13 @@ class Facebook extends AbstractProvider
     private $enableBetaMode = false;
 
     /**
+     * The fields to look up when requesting the resource owner
+     *
+     * @var string[]
+     */
+    protected $fields;
+
+    /**
      * @param array $options
      * @param array $collaborators
      *
@@ -87,6 +94,21 @@ class Facebook extends AbstractProvider
         if (!empty($options['enableBetaTier']) && $options['enableBetaTier'] === true) {
             $this->enableBetaMode = true;
         }
+
+        if (!empty($options['fields']) && is_array($options['fields'])) {
+            $this->fields = $options['fields'];
+        } else {
+            $this->fields = [
+                'id', 'name', 'first_name', 'last_name',
+                'email', 'hometown', 'picture.type(large){url,is_silhouette}',
+                'gender', 'age_range'
+            ];
+
+            // backwards compatibility less than 2.8
+            if (version_compare(substr($this->graphApiVersion, 1), '2.8') < 0) {
+                $this->fields[] = 'bio';
+            }
+        }
     }
 
     public function getBaseAuthorizationUrl(): string
@@ -106,22 +128,11 @@ class Facebook extends AbstractProvider
 
     public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
-        $fields = [
-            'id', 'name', 'first_name', 'last_name',
-            'email', 'hometown', 'picture.type(large){url,is_silhouette}',
-            'gender', 'age_range'
-        ];
-
-        // backwards compatibility less than 2.8
-        if (version_compare(substr($this->graphApiVersion, 1), '2.8') < 0) {
-            $fields[] = 'bio';
-        }
-
         $appSecretProof = AppSecretProof::create($this->clientSecret, $token->getToken());
 
         return $this->getBaseGraphUrl()
             . $this->graphApiVersion
-            . '/me?fields=' . implode(',', $fields)
+            . '/me?fields=' . implode(',', $this->fields)
             . '&access_token=' . $token . '&appsecret_proof=' . $appSecretProof;
     }
 
