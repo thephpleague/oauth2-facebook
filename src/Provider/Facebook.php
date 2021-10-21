@@ -96,10 +96,6 @@ class Facebook extends AbstractProvider
         }
 
         if (!empty($options['fields']) && is_array($options['fields'])) {
-            array_walk($options['fields'], static function ($value) { if (!is_string($value)) {
-                throw new FacebookProviderException('Facebook does not support non-string fields');
-            }});
-
             $this->fields = $options['fields'];
         } else {
             $this->fields = [
