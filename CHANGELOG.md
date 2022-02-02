@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.1.0 - Febuary 2, 2022
+
+- Removed support for PHP <7.3
+- Add support for pulling custom fields, #72 by @zegenie
+
 ## 2.0.5 - Febuary 1, 2021
 
 - Tagged the correct commit for PHP 8 support
