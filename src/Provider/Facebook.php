@@ -195,7 +195,7 @@ class Facebook extends AbstractProvider
     /**
      * Get the base Facebook URL.
      */
-    private function getBaseFacebookUrl(): string
+    protected function getBaseFacebookUrl(): string
     {
         return $this->enableBetaMode ? static::BASE_FACEBOOK_URL_BETA : static::BASE_FACEBOOK_URL;
     }
@@ -203,7 +203,7 @@ class Facebook extends AbstractProvider
     /**
      * Get the base Graph API URL.
      */
-    private function getBaseGraphUrl(): string
+    protected function getBaseGraphUrl(): string
     {
         return $this->enableBetaMode ? static::BASE_GRAPH_URL_BETA : static::BASE_GRAPH_URL;
     }
