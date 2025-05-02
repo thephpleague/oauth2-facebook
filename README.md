@@ -228,7 +228,7 @@ $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
 
 ### Long-lived Access Tokens
 
-Facebook will allow you to extend the lifetime of an access token by [exchanging a short-lives access token with a long-lived access token](https://developers.facebook.com/docs/facebook-login/access-tokens#extending).
+Facebook will allow you to extend the lifetime of an access token by [exchanging a short-lived access token with a long-lived access token](https://developers.facebook.com/docs/facebook-login/access-tokens#extending).
 
 Once you obtain a short-lived (default) access token, you can exchange it for a long-lived one.
 
