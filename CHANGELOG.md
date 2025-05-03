@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.2.1 - March 6, 2023
+
+- Changed class FacebookProviderException to extend IdentityProviderException
+
 ## 2.2.0 - Febuary 24, 2022
 
 - Make URL getters protected to allow extension, #74 by @mlncn
