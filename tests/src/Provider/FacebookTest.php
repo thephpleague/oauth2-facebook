@@ -3,6 +3,7 @@
 namespace League\OAuth2\Client\Test\Provider;
 
 use InvalidArgumentException;
+use GuzzleHttp\Psr7\Utils;
 use Mockery as m;
 use League\OAuth2\Client\Provider\Facebook;
 use League\OAuth2\Client\Token\AccessToken;
@@ -169,10 +170,10 @@ class FacebookTest extends TestCase
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getHeader')
             ->times(1)
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
         $response->shouldReceive('getBody')
             ->times(1)
-            ->andReturn('{"access_token":"mock_access_token","token_type":"bearer","expires_in":3600}');
+            ->andReturn(Utils::streamFor('{"access_token":"mock_access_token","token_type":"bearer","expires_in":3600}'));
 
         $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('send')->times(1)->andReturn($response);
@@ -195,10 +196,10 @@ class FacebookTest extends TestCase
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getHeader')
             ->times(1)
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
         $response->shouldReceive('getBody')
             ->times(1)
-            ->andReturn('{"access_token":"long-lived-token","token_type":"bearer","expires_in":3600}');
+            ->andReturn(Utils::streamFor('{"access_token":"long-lived-token","token_type":"bearer","expires_in":3600}'));
 
         $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('send')->times(1)->andReturn($response);
@@ -260,10 +261,10 @@ class FacebookTest extends TestCase
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getHeader')
                  ->times(1)
-                 ->andReturn('application/x-www-form-urlencoded');
+                 ->andReturn(['application/x-www-form-urlencoded']);
         $response->shouldReceive('getBody')
                  ->times(1)
-                 ->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token');
+                 ->andReturn(Utils::streamFor('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token'));
 
         $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('send')->times(1)->andReturn($response);
@@ -282,10 +283,10 @@ class FacebookTest extends TestCase
         $postResponse = m::mock('Psr\Http\Message\ResponseInterface');
         $postResponse->shouldReceive('getHeader')
                  ->times(1)
-                 ->andReturn('application/json');
+                 ->andReturn(['application/json']);
         $postResponse->shouldReceive('getBody')
                      ->times(1)
-                     ->andReturn('{"error":{"message":"Foo auth error","type":"OAuthException","code":191}}');
+                     ->andReturn(Utils::streamFor('{"error":{"message":"Foo auth error","type":"OAuthException","code":191}}'));
 
         $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('send')->times(1)->andReturn($postResponse);

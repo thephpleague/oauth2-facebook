@@ -3,11 +3,11 @@ name: CI
 on:
     pull_request:
     push:
-        branches: [ master ]
+        branches: [ main ]
 
 jobs:
     run:
-        runs-on: ubuntu-18.04
+        runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
@@ -15,18 +15,23 @@ jobs:
                     - '7.3'
                     - '7.4'
                     - '8.0'
+                    - '8.1'
+                    - '8.2'
+                    - '8.3'
+                    - '8.4'
+                    - '8.5'
                 coverage: ['none']
                 include:
                     - description: 'Log Code Coverage'
-                      php: '8.0'
-                      coverage: 'xdebug'
+                      php: '8.5'
+                      coverage: 'pcov'
 
         name: PHP ${{ matrix.php }} ${{ matrix.description }}
         steps:
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v6
 
-            - uses: actions/cache@v2
+            - uses: actions/cache@v4
               with:
                   path: ~/.composer/cache/files
                   key: ${{ matrix.php }}
@@ -41,16 +46,17 @@ jobs:
               run: composer install
 
             - name: Run PHPUnit tests
-              run: vendor/bin/phpunit
+              run: vendor/bin/phpunit --no-coverage
               if: matrix.coverage == 'none'
 
             - name: PHPUnit tests and Log Code coverage
               run: vendor/bin/phpunit --exclude-group proxy --coverage-clover=coverage.xml
-              if: matrix.coverage == 'xdebug'
+              if: matrix.coverage == 'pcov'
 
             - name: Run codecov
-              uses: codecov/codecov-action@v1
-              if: matrix.coverage == 'xdebug'
+              uses: codecov/codecov-action@v4
+              if: matrix.coverage == 'pcov'
               with:
-                  file: './coverage.xml'
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  files: './coverage.xml'
                   fail_ci_if_error: true
