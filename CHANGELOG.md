@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+- `FacebookProviderException` now extends `IdentityProviderException`, so it can be caught together with other provider errors, #75 by @detrax
+
 ## 2.2.0 - Febuary 24, 2022
 
 - Make URL getters protected to allow extension, #74 by @mlncn

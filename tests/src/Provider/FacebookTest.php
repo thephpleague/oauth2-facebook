@@ -217,6 +217,19 @@ class FacebookTest extends TestCase
         $this->provider->getAccessToken('foo', ['refresh_token' => 'foo_token']);
     }
 
+    public function testRefreshExceptionCanBeCaughtAsIdentityProviderException(): void
+    {
+        try {
+            $this->provider->getAccessToken('foo', ['refresh_token' => 'foo_token']);
+            $this->fail('Expected an exception');
+        } catch (IdentityProviderException $e) {
+            $this->assertInstanceOf(FacebookProviderException::class, $e);
+            $this->assertSame('Facebook does not support token refreshing.', $e->getMessage());
+            $this->assertSame(0, $e->getCode());
+            $this->assertNull($e->getResponseBody());
+        }
+    }
+
     public function testScopes(): void
     {
         self::assertEquals(['public_profile', 'email'], $this->provider->getDefaultScopes());

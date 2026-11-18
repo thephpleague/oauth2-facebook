@@ -139,7 +139,7 @@ class Facebook extends AbstractProvider
     public function getAccessToken($grant = 'authorization_code', array $params = []): AccessTokenInterface
     {
         if (isset($params['refresh_token'])) {
-            throw new FacebookProviderException('Facebook does not support token refreshing.');
+            throw new FacebookProviderException('Facebook does not support token refreshing.', 0, null);
         }
 
         return parent::getAccessToken($grant, $params);
