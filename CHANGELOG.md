@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 2.3.0 - November 18, 2026
 
 - `FacebookProviderException` now extends `IdentityProviderException`, so it can be caught together with other provider errors, #75 by @detrax
 
