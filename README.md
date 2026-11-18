@@ -1,6 +1,6 @@
 # Facebook Provider for OAuth 2.0 Client
 
-[![Build Status](https://travis-ci.org/thephpleague/oauth2-facebook.png?branch=master)](https://travis-ci.org/thephpleague/oauth2-facebook)
+[![CI](https://github.com/thephpleague/oauth2-facebook/actions/workflows/ci.yaml/badge.svg)](https://github.com/thephpleague/oauth2-facebook/actions/workflows/ci.yaml)
 [![Latest Stable Version](https://poser.pugx.org/league/oauth2-facebook/v/stable.png)](https://packagist.org/packages/league/oauth2-facebook)
 
 This package provides Facebook OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
